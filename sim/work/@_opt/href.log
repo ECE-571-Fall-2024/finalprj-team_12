@@ -1,0 +1,15 @@
+BEGIN 3:feature_if:fast__2:work
+    features :  1:max_pool:fast__1:work 1:convolution:fast__1:work 1:convolution:fast:work 1:max_pool:fast:work 1:dense:fast:work 1:softmax:fast:work 1:dense:fast__1:work
+    ready :  1:max_pool:fast__1:work 1:convolution:fast__1:work 1:convolution:fast:work 1:max_pool:fast:work 1:dense:fast:work 1:softmax:fast:work 1:dense:fast__1:work
+    valid :  1:max_pool:fast__1:work 1:convolution:fast__1:work 1:convolution:fast:work 1:max_pool:fast:work 1:dense:fast:work 1:softmax:fast:work 1:dense:fast__1:work
+END 
+BEGIN 3:feature_if:fast__1:work
+    ready :  1:convolution:fast:work 1:mnist:fast:work
+    valid :  1:convolution:fast:work 1:mnist:fast:work
+    features :  1:convolution:fast:work 1:mnist:fast:work
+END 
+BEGIN 3:feature_if:fast__3:work
+    features :  1:softmax:fast:work 1:mnist:fast:work
+    ready :  1:softmax:fast:work 1:mnist:fast:work
+    valid :  1:softmax:fast:work 1:mnist:fast:work
+END 
