@@ -55,11 +55,11 @@ module testbench;
     end
   endfunction
 
-  function automatic void random_positive(ref image_array image);
+  function automatic void random_positive_image(ref image_array image);
     foreach (image[r,c]) image[r][c] = $urandom_range(0, 1<<(feature_frac_bits+2));
   endfunction
 
-  function automatic void random_negative(ref image_array image);
+  function automatic void random_negative_image(ref image_array image);
     foreach (image[r,c]) image[r][c] = -$urandom_range(0, 1<<(feature_frac_bits+2));
   endfunction
 
@@ -192,11 +192,97 @@ module testbench;
 
   feature_if features_in(), features_out();
 
-  typedef enum { I_ZERO, I_RAND, I_RAND_NEG, I_RAND_POS, I_K, I_INCR } image_types;
-  typedef enum { F_RAND, F_ZERO, F_IDENT, F_NEG_IDENT, F_K, F_INCR } filter_types;
+  typedef enum { I_ZERO, I_RAND, I_RAND_NEG, I_RAND_POS, I_K, I_INCR } image_type;
+  typedef enum { F_RAND, F_ZERO, F_IDENT, F_NEG_IDENT, F_K, F_INCR } filter_type;
+
+  image_type image_stim[] = { I_ZERO, I_RAND, I_RAND_NEG, I_RAND_POS, I_K, I_INCR };
+  filter_type filter_stim[] = { F_RAND, F_ZERO, F_IDENT, F_NEG_IDENT, F_K, F_INCR };
+
+  function automatic void get_image(input image_type it, ref image_array i);
+    case (it) 
+    I_ZERO      : zero_image(i);
+    I_RAND      : random_image(i);
+    I_RAND_NEG  : random_negative_image(i);
+    I_RAND_POS  : random_positive_image(i);
+    I_K         : k_image($urandom(feature_frac_bits + 2), i);
+    I_INCR      : incrementing_image(i);
+    endcase
+  endfunction
+
+  function automatic void get_filter(input filter_type ft, ref filter_array f);
+    case (ft) 
+    F_ZERO      : zero_filter(f);
+    F_RAND      : random_filter(f);
+    F_IDENT     : identity_filter(f);
+    F_NEG_IDENT : negative_identity_filter(f);
+    F_K         : k_filter($urandom(weight_frac_bits), f);
+    F_INCR      : incrementing_filter(f);
+    endcase
+  endfunction
+
+  task automatic run_convolution(
+    input image_array input_image[],
+    input filter_array filter[],
+    ref   image_array output_image);
+
+    // set weight_memory
+
+    for (int i=0; i<INPUT_IMAGES; i++) begin
+      for (int r=0; r<FILTER_HEIGHT; r++) begin
+        u_convolution_1.weight_memory[0][i][r] = filter[i][r];
+      end
+    end 
+
+    // drive features to DUT
+ 
+    features_in.valid = 1;
+    foreach(input_image[i,r,c]) begin
+      features_in.features[0] = input_image[i][r][c];
+      @(posedge clock);
+      while (~features_in.ready) @(posedge clock);
+    end
+    features_in.valid = 0;
+
+    @(posedge clock); 
+  
+    features_out.ready = 1;
+    foreach(output_image[r,c]) begin
+      while (~features_out.valid) @(posedge clock);
+      output_image[r][c] = features_out.features[0];
+      @(posedge clock);
+    end
+  endtask
+
+  task automatic print_failure
+     (input image_array images[],
+      input filter_array filters[],
+      input image_array  output_image,
+      input image_array  expected_output);
+
+    $display(" ");
+    $display("Error: test failed: ");
+    $display(" ");
+    for (int i=0; i<INPUT_IMAGES; i++) begin
+      $display("\ninput image: %1d", i);
+      print_image(input_image[i]);
+      $display("\nfilter: %1d ", i);
+      print_filter(filter[i]);
+    end
+    $display("\noutput image: ");
+    print_image(output_image);
+    $display("\nexpected output: ");
+    print_image(expected_output);
+    $display("\n\n");
+    $finish;
+
+  endtask
 
   initial begin
   
+    $display("Running convolution test ");
+    $display("filter_height: %1d ", FILTER_HEIGHT);
+    $display("filter_width: %1d ", FILTER_WIDTH);
+
     /*
 
     // test the stimulus creation routines
@@ -239,18 +325,6 @@ module testbench;
 
     */
 
-    random_negative(input_image[0]);
-    negative_identity_filter(filter[0]);
-    //identity_filter(filter[1]);
-
-    for (int i=0; i<INPUT_IMAGES; i++) begin
-      for (int r=0; r<FILTER_HEIGHT; r++) begin
-        u_convolution_1.weight_memory[0][i][r] = filter[i][r];
-      end
-    end 
-
-    u_convolution_1.bias_memory[0] = '0;
-    
     @(posedge reset_n);
     @(posedge clock);
     features_in.valid = 0;
@@ -258,36 +332,34 @@ module testbench;
 
     repeat (100) @(posedge clock);
 
-    features_in.valid = 1;
-    foreach(input_image[i,r,c]) begin
-      features_in.features[0] = input_image[i][r][c];
-      @(posedge clock);
-      while (~features_in.ready) @(posedge clock);
-    end
-    features_in.valid = 0;
+    // combinations of stimuli
 
-    @(posedge clock); 
-   
-    features_out.ready = 1;
-    foreach(output_image[r,c]) begin
-      while (~features_out.valid) @(posedge clock);
-      output_image[r][c] = features_out.features[0];
-      @(posedge clock);
+    foreach (image_stim[i]) begin
+      foreach (filter_stim[f]) begin
+        get_image(image_stim[i], input_image[0]);
+        get_filter(filter_stim[f], filter[0]);
+        convolution(1, 0, input_image, filter, expected_output);
+
+        run_convolution(input_image, filter, output_image);
+        $display("running test: image_stim: %1d filter_stim: %1d ", image_stim[i], filter_stim[f]);
+        if (expected_output != output_image) print_failure(input_image, filter, output_image, expected_output);
+      end
     end
 
-    print_image(input_image[0]);
-    print_image_real(input_image[0]);
-    print_filter(filter[0]);
-    print_image(output_image);
-    print_image_real(output_image);
+    // random tests
 
-    convolution(1, 0, input_image, filter, expected_output);
+    repeat (100) begin
+      random_image(input_image[0]);
+      random_filter(filter[0]);
+      convolution(1, 0, input_image, filter, expected_output);
 
-    print_image(expected_output);
-    print_image_real(expected_output);
+      run_convolution(input_image, filter, output_image);
+      $display("running random test ");
+      if (expected_output != output_image) print_failure(input_image, filter, output_image, expected_output);
+    end
 
-    if (expected_output == output_image) $display("Success! ");
-    else                                 $display("Fail!    ");
+    // if we get here, everything worked
+    $display("Convolution tests passed! ");
     $finish;
   end
 
