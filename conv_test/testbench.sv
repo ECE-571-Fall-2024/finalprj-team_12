@@ -280,48 +280,51 @@ module testbench;
   initial begin
   
     $display("Running convolution test ");
+    $display("image_height: %1d ",  IMAGE_HEIGHT);
+    $display("image_width: %1d ",   IMAGE_WIDTH);
     $display("filter_height: %1d ", FILTER_HEIGHT);
-    $display("filter_width: %1d ", FILTER_WIDTH);
+    $display("filter_width: %1d ",  FILTER_WIDTH);
+    $display("input_images: %1d ",  INPUT_IMAGES);
 
     /*
 
     // test the stimulus creation routines
 
-    random_image(input_image);
-    print_image(input_image);
-    print_image_real(input_image);
+    random_image(input_image[0]);
+    print_image(input_image[0]);
+    print_image_real(input_image[0]);
 
-    zero_image(input_image);
-    print_image(input_image);
-    print_image_real(input_image);
+    zero_image(input_image[0]);
+    print_image(input_image[0]);
+    print_image_real(input_image[0]);
 
-    k_image(real_to_feature(2.5), input_image);
-    print_image(input_image);
-    print_image_real(input_image);
+    k_image(real_to_feature(2.5), input_image[0]);
+    print_image(input_image[0]);
+    print_image_real(input_image[0]);
 
-    incrementing_image(input_image);
-    print_image(input_image);
-    print_image_real(input_image);
+    incrementing_image(input_image[0]);
+    print_image(input_image[0]);
+    print_image_real(input_image[0]);
 
-    random_filter(filter);
-    print_filter(filter);
-    print_filter_real(filter);
+    random_filter(filter[0]);
+    print_filter(filter[0]);
+    print_filter_real(filter[0]);
 
-    zero_filter(filter);
-    print_filter(filter);
-    print_filter_real(filter);
+    zero_filter(filter[0]);
+    print_filter(filter[0]);
+    print_filter_real(filter[0]);
 
-    k_filter(real_to_weight(1.23), filter);
-    print_filter(filter);
-    print_filter_real(filter);
+    k_filter(real_to_weight(1.234), filter[0]);
+    print_filter(filter[0]);
+    print_filter_real(filter[0]);
    
-    incrementing_filter(filter);
-    print_filter(filter);
-    print_filter_real(filter);
+    incrementing_filter(filter[0]);
+    print_filter(filter[0]);
+    print_filter_real(filter[0]);
 
-    identity_filter(filter);
-    print_filter(filter);
-    print_filter_real(filter);
+    identity_filter(filter[0]);
+    print_filter(filter[0]);
+    print_filter_real(filter[0]);
 
     */
 
@@ -336,8 +339,10 @@ module testbench;
 
     foreach (image_stim[i]) begin
       foreach (filter_stim[f]) begin
-        get_image(image_stim[i], input_image[0]);
-        get_filter(filter_stim[f], filter[0]);
+        for (int img=0; img<INPUT_IMAGES; img++) begin
+          get_image(image_stim[i], input_image[img]);
+          get_filter(filter_stim[f], filter[img]);
+        end
         convolution(1, 0, input_image, filter, expected_output);
 
         run_convolution(input_image, filter, output_image);
@@ -349,8 +354,10 @@ module testbench;
     // random tests
 
     repeat (100) begin
-      random_image(input_image[0]);
-      random_filter(filter[0]);
+      for (int img=0; img<INPUT_IMAGES; img++) begin
+        random_image(input_image[0]);
+        random_filter(filter[0]);
+      end
       convolution(1, 0, input_image, filter, expected_output);
 
       run_convolution(input_image, filter, output_image);
@@ -372,7 +379,7 @@ module testbench;
         .IMAGE_WIDTH     (IMAGE_WIDTH),
         .FILTER_HEIGHT   (FILTER_HEIGHT),
         .FILTER_WIDTH    (FILTER_WIDTH),
-        .input_images    (1),
+        .input_images    (INPUT_IMAGES),
         .output_images   (1),
         .load_weights    (0)
     ) u_convolution_1 (
