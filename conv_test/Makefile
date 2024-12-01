@@ -22,10 +22,11 @@ all:
 
 gui: compile
 	$(VSIM) testbench -do gui_run.do
+	#$(VSIM) testbench -do gui_run.do -g FILTER_HEIGHT=5 -g FILTER_WIDTH=5 -g IMAGE_HEIGHT=14 -g IMAGE_WIDTH=14
 
 sim: compile
-	$(VSIM) -c testbench -do sim_run.do
 	$(VSIM) -c testbench -do sim_run.do -g FILTER_HEIGHT=5 -g FILTER_WIDTH=5
+	$(VSIM) -c testbench -do sim_run.do
 	$(VSIM) -c testbench -do sim_run.do -g IMAGE_HEIGHT=14 -g IMAGE_WIDTH=14
 	$(VSIM) -c testbench -do sim_run.do -g IMAGE_HEIGHT=100 -g IMAGE_WIDTH=10 -g FILTER_HEIGHT=7 -g FILTER_WIDTH=7
 	$(VSIM) -c testbench -do sim_run.do -g INPUT_IMAGES=4

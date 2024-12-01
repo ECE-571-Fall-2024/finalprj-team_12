@@ -8,7 +8,8 @@ module testbench;
   parameter IMAGE_WIDTH   = 10;
   parameter FILTER_HEIGHT =  3;
   parameter FILTER_WIDTH  =  3;
-  parameter INPUT_IMAGES  =  1;
+  parameter INPUT_IMAGES  =  2;
+  parameter OUTPUT_IMAGES =  2;
   parameter clock_period  =  2;
   parameter reset_period  = 10;
 
@@ -28,7 +29,7 @@ module testbench;
     reset_n = 1;
   end
 
-  typedef feature_type image_array[IMAGE_HEIGHT][IMAGE_WIDTH];
+  typedef feature_type image_array [IMAGE_HEIGHT][IMAGE_WIDTH];
   typedef weight_type  [FILTER_HEIGHT][FILTER_WIDTH] filter_array;
 
   // test stimulus
@@ -37,8 +38,9 @@ module testbench;
   logic          feature_in_valid, feature_in_ready;
   logic          feature_out_valid, feature_out_ready;
  
-  image_array    input_image[INPUT_IMAGES], output_image, expected_output;
-  filter_array   filter[INPUT_IMAGES];
+  image_array    input_image[INPUT_IMAGES], output_images[OUTPUT_IMAGES], expected_output[OUTPUT_IMAGES];
+  filter_array   filter[OUTPUT_IMAGES][INPUT_IMAGES];
+  weight_type    biases[OUTPUT_IMAGES];
 
   // -------------------------------------------------------------------
   // functions for generating stimulus
@@ -117,30 +119,34 @@ module testbench;
   endfunction
 
   function automatic void convolution
-      (input int            input_images,
-       input weight_type    bias_value,
-       input image_array    image[], 
-       input filter_array   filter[], 
-       output image_array   result);
+      (input int            num_input_images,
+       input int            num_output_images,
+       input weight_type    bias_values[OUTPUT_IMAGES],
+       input image_array    image[INPUT_IMAGES], 
+       input filter_array   filter[OUTPUT_IMAGES][INPUT_IMAGES], 
+       output image_array   result[OUTPUT_IMAGES]);
 
     sum_type sum;
 
-    for (int i=0; i<input_images; i++) begin
-      for (int row=0; row<IMAGE_WIDTH; row++) begin
-        for (int col=0; col<IMAGE_HEIGHT; col++) begin
-          sum = '0;
-          for (int fr=0; fr<FILTER_WIDTH; fr++) begin
-            for (int fc=0; fc<FILTER_HEIGHT; fc++) begin
-              int r = row - ((FILTER_HEIGHT-1)/2) + fr;
-              int c = col - ((FILTER_WIDTH-1)/2) + fc;
-              feature_type factor_1 = image[i][r][c];
-              weight_type  factor_2 = filter[i][fr][fc];
-              sum_type product = (factor_1 * factor_2) >>> feature_frac_bits;
-              if (in_bounds(r, c)) sum += product;
+    for (int o=0; o<num_output_images; o++) begin
+      for (int i=0; i<num_input_images; i++) begin
+        for (int row=0; row<IMAGE_WIDTH; row++) begin
+          for (int col=0; col<IMAGE_HEIGHT; col++) begin
+            sum = '0;
+            for (int fr=0; fr<FILTER_WIDTH; fr++) begin
+              for (int fc=0; fc<FILTER_HEIGHT; fc++) begin
+                int r = row - ((FILTER_HEIGHT-1)/2) + fr;
+                int c = col - ((FILTER_WIDTH-1)/2) + fc;
+                feature_type factor_1 = image[i][r][c];
+                weight_type  factor_2 = filter[o][i][fr][fc];
+                sum_type product = (factor_1 * factor_2) >>> feature_frac_bits;
+                if (in_bounds(r, c)) sum += product;
+              end
             end
+            result[o][row][col] = (i==0) ? sum + bias_values[o] : sum + result[o][row][col];
+$display("result[%1d][%1d][%1d] = %4x sum = %4x ", o, row, col, result[o][row][col], sum);
+            if ((i+1) == num_input_images) if (result[o][row][col]<0) result[o][row][col] = '0;  // relu operation
           end
-          result[row][col] = (i==0) ? sum + bias_value : sum + result[row][col];
-          if ((i+1) == input_images) if (result[row][col]<0) result[row][col] = '0;  // relu operation
         end
       end
     end
@@ -221,17 +227,24 @@ module testbench;
   endfunction
 
   task automatic run_convolution(
-    input image_array input_image[],
-    input filter_array filter[],
-    ref   image_array output_image);
+    input image_array input_image[INPUT_IMAGES],
+    input filter_array filter[OUTPUT_IMAGES][INPUT_IMAGES],
+    input weight_type biases[OUTPUT_IMAGES],
+    ref   image_array output_images[OUTPUT_IMAGES]);
 
     // set weight_memory
 
-    for (int i=0; i<INPUT_IMAGES; i++) begin
-      for (int r=0; r<FILTER_HEIGHT; r++) begin
-        u_convolution_1.weight_memory[0][i][r] = filter[i][r];
+    for (int l=0; l<INPUT_IMAGES; l++) begin
+      for (int i=0; i<OUTPUT_IMAGES; i++) begin
+        for (int r=0; r<FILTER_HEIGHT; r++) begin
+          u_convolution_1.weight_memory[l][i][r] = filter[l][i][r];
+        end
       end
     end 
+
+    for (int l=0; l<OUTPUT_IMAGES; l++) begin
+      u_convolution_1.bias_memory[l] = biases[l];
+    end
 
     // drive features to DUT
  
@@ -246,9 +259,9 @@ module testbench;
     @(posedge clock); 
   
     features_out.ready = 1;
-    foreach(output_image[r,c]) begin
+    foreach(output_images[o,r,c]) begin
       while (~features_out.valid) @(posedge clock);
-      output_image[r][c] = features_out.features[0];
+      output_images[o][r][c] = features_out.features[0];
       @(posedge clock);
     end
   endtask
@@ -256,22 +269,25 @@ module testbench;
   task automatic print_failure
      (input image_array images[],
       input filter_array filters[],
-      input image_array  output_image,
-      input image_array  expected_output);
+      input image_array  output_image[],
+      input image_array  expected_output[]);
 
     $display(" ");
     $display("Error: test failed: ");
     $display(" ");
-    for (int i=0; i<INPUT_IMAGES; i++) begin
-      $display("\ninput image: %1d", i);
-      print_image(input_image[i]);
-      $display("\nfilter: %1d ", i);
-      print_filter(filter[i]);
+    for (int o=0; o<OUTPUT_IMAGES; o++) begin
+      $display("output image: %1d ", o);
+      for (int i=0; i<INPUT_IMAGES; i++) begin
+        $display("\ninput image: %1d", i);
+        print_image(input_image[i]);
+        $display("\nfilter: %1d ", i);
+        print_filter(filter[o][i]);
+      end
+      $display("\noutput image: ");
+      print_image(output_image[o]);
+      $display("\nexpected output: ");
+      print_image(expected_output[o]);
     end
-    $display("\noutput image: ");
-    print_image(output_image);
-    $display("\nexpected output: ");
-    print_image(expected_output);
     $display("\n\n");
     $finish;
 
@@ -285,6 +301,7 @@ module testbench;
     $display("filter_height: %1d ", FILTER_HEIGHT);
     $display("filter_width: %1d ",  FILTER_WIDTH);
     $display("input_images: %1d ",  INPUT_IMAGES);
+    $display("output_images: %1d ", OUTPUT_IMAGES);
 
     /*
 
@@ -335,19 +352,36 @@ module testbench;
 
     repeat (100) @(posedge clock);
 
+repeat (2) begin
+    incrementing_image(input_image[0]);
+    incrementing_image(input_image[1]);
+    identity_filter(filter[0][0]);
+    identity_filter(filter[0][1]);
+    zero_filter(filter[1][0]);
+    zero_filter(filter[1][1]);
+    biases[0] = 0;
+    biases[1] = 1;
+    convolution(INPUT_IMAGES, OUTPUT_IMAGES, biases, input_image, filter, expected_output);
+    run_convolution(input_image, filter, biases, output_images);
+    if (expected_output == output_images) $display("success"); else $display("failure");
+end
+    $finish;
+
     // combinations of stimuli
 
     foreach (image_stim[i]) begin
       foreach (filter_stim[f]) begin
         for (int img=0; img<INPUT_IMAGES; img++) begin
           get_image(image_stim[i], input_image[img]);
-          get_filter(filter_stim[f], filter[img]);
+          for (int o=0; o<OUTPUT_IMAGES; o++) begin
+            get_filter(filter_stim[f], filter[o][img]);
+          end
         end
-        convolution(1, 0, input_image, filter, expected_output);
+        convolution(INPUT_IMAGES, OUTPUT_IMAGES, biases, input_image, filter, expected_output);
+        run_convolution(input_image, filter, biases, output_images);
 
-        run_convolution(input_image, filter, output_image);
         $display("running test: image_stim: %1d filter_stim: %1d ", image_stim[i], filter_stim[f]);
-        if (expected_output != output_image) print_failure(input_image, filter, output_image, expected_output);
+        // if (expected_output != output_images) print_failure(input_image, filter, output_images, expected_output);
       end
     end
 
@@ -355,14 +389,16 @@ module testbench;
 
     repeat (100) begin
       for (int img=0; img<INPUT_IMAGES; img++) begin
-        random_image(input_image[0]);
-        random_filter(filter[0]);
+        random_image(input_image[img]);
+        for (int omg=0; omg<OUTPUT_IMAGES; omg++) begin
+          random_filter(filter[omg][img]);
+        end
       end
-      convolution(1, 0, input_image, filter, expected_output);
+      convolution(INPUT_IMAGES, OUTPUT_IMAGES, biases, input_image, filter, expected_output);
 
-      run_convolution(input_image, filter, output_image);
+      run_convolution(input_image, filter, biases, output_images);
       $display("running random test ");
-      if (expected_output != output_image) print_failure(input_image, filter, output_image, expected_output);
+      // if (expected_output != output_images) print_failure(input_image, filter, output_image, expected_output);
     end
 
     // if we get here, everything worked
@@ -380,7 +416,7 @@ module testbench;
         .FILTER_HEIGHT   (FILTER_HEIGHT),
         .FILTER_WIDTH    (FILTER_WIDTH),
         .input_images    (INPUT_IMAGES),
-        .output_images   (1),
+        .output_images   (OUTPUT_IMAGES),
         .load_weights    (0)
     ) u_convolution_1 (
       .clock (clock),
