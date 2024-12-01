@@ -1,2 +1,2 @@
 do wave.do
-run 10 ms
+run 100 ms

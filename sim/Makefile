@@ -7,7 +7,8 @@ SW   = ../cpp
 VLIB = $(QUESTA_HOME)/bin/vlib
 VMAP = $(QUESTA_HOME)/bin/vmap
 VLOG = $(QUESTA_HOME)/bin/vlog +acc=all -work work
-VSIM = $(QUESTA_HOME)/bin/vsim -voptargs=+acc -work work -sv_lib softmax
+#VSIM = $(QUESTA_HOME)/bin/vsim -voptargs=+acc -work work -sv_lib softmax
+VSIM = $(QUESTA_HOME)/bin/vsim -debugdb -work work -sv_lib softmax
 
 .PHONY: all compile sim gui clean
 

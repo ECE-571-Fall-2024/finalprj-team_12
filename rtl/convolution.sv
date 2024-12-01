@@ -44,6 +44,7 @@ module convolution #(
     $display("image height: %1d ", IMAGE_HEIGHT);
     $display("image width:  %1d ", IMAGE_WIDTH);
     $display("image size:   %1d ", IMAGE_SIZE);
+    $display("shift register size %1d ", SHIFT_REGISTER_SIZE);
    end
 
    // load weight and bias memories
@@ -78,7 +79,7 @@ module convolution #(
    function automatic void print_shift_register(ref feature_type sr[SHIFT_REGISTER_SIZE]);
      $display("\n\nshift_register: ");
      for (int r=0; r<FILTER_HEIGHT-1; r++) begin
-       for (int c=0; c<IMAGE_WIDTH; c++) begin
+       for (int c=0; c<IMAGE_WIDTH + (PAR_COMPS - 1); c++) begin
          $write("%3d ", sr[r*IMAGE_WIDTH+c]);
        end
        $write("\n");
@@ -124,7 +125,7 @@ module convolution #(
      end else begin
        if (features_in.ready && features_in.valid) begin
          images[in_image_no][in_index] = features_in.features[0];
-         if ((in_index + PAR_COMPS) < IMAGE_SIZE) in_index <= in_index + PAR_COMPS;
+         if ((in_index + 1) < IMAGE_SIZE) in_index <= in_index + 1;
          else begin
            in_index <= '0;
            in_image_no <= in_image_no + 1;
@@ -187,10 +188,10 @@ module convolution #(
        always @(posedge clock, negedge reset_n) begin
          if (reset_n == 0) sh_reg[p + SHIFT_REGISTER_SIZE - PAR_COMPS] <= '0;
          else if (shifting) begin
-           sh_reg[p + SHIFT_REGISTER_SIZE - PAR_COMPS] <= (head_pixel < IMAGE_SIZE-1) ? images[p_image_no][p_index + p] : '0;
-           //$display("shifed in value: %3d p_index = %1d p_image_no = %1d ", (head_pixel < IMAGE_SIZE-1) ? images[p_image_no][p_index + p] : '0, p_index, p_image_no);
-           //$display("head_pixel = %1d zero_pixel = %1d tail_pixel = %1d ", head_pixel, zero_pixel, tail_pixel);
-           //print_shift_register(sh_reg);
+           sh_reg[p + SHIFT_REGISTER_SIZE - PAR_COMPS] <= (head_pixel + p < IMAGE_SIZE-1) ? images[p_image_no][p_index + p] : '0;
+           // $display("shifed in value: %3d p_index = %1d p_image_no = %1d p=%1d", (head_pixel < IMAGE_SIZE-1) ? images[p_image_no][p_index + p] : '0, p_index, p_image_no, p);
+           // $display("head_pixel = %1d zero_pixel = %1d tail_pixel = %1d ", head_pixel, zero_pixel, tail_pixel);
+           // print_shift_register(sh_reg);
          end
        end
      end 
@@ -225,7 +226,7 @@ module convolution #(
    // --------------------------------------------------------------------
 
    assign tail_pixel = head_pixel - (SHIFT_REGISTER_SIZE - 1);
-   assign zero_pixel = head_pixel - (FILTER_WIDTH/2 + ((FILTER_HEIGHT/2) * IMAGE_WIDTH));
+   assign zero_pixel = head_pixel - (FILTER_WIDTH/2 + ((FILTER_HEIGHT/2) * IMAGE_WIDTH) + (PAR_COMPS - 1));
 
    genvar r, c;
 
@@ -233,7 +234,7 @@ module convolution #(
      for (p=0; p<PAR_COMPS; p++) begin
        for (r=0; r<FILTER_HEIGHT; r++) begin
          for (c=0; c<FILTER_WIDTH; c++) begin
-           assign product_array[p][r][c] = weight_memory[out_image_no][p_image_no][r][c] * sh_reg[r * IMAGE_WIDTH + p + c] >>> feature_frac_bits;
+           assign product_array[p][r][c] = weight_memory[out_image_no][p_image_no][r][c] * sh_reg[r * IMAGE_WIDTH + c + p] >>> weight_frac_bits;
          end
          always @(posedge clock, negedge reset_n) begin
            if (reset_n == 0) row_sums[p][r] <= '0;
@@ -274,7 +275,7 @@ module convolution #(
 
    always_ff @(posedge clock) processing_d1 <= processing;
    always_ff @(posedge clock) processing_d2 <= processing_d1;
-
+/*
    always_ff @(posedge clock) begin
      if ((processing_d2) && (zero_pixel - 2 >= 0) && (zero_pixel - 2 < IMAGE_SIZE)) begin  // -2 to account for pipeline
        for (int p=0; p<PAR_COMPS; p++) begin
@@ -290,7 +291,19 @@ module convolution #(
        end
      end
    end
-  
+ */
+
+   logic signed [$clog2(IMAGE_SIZE):0] offset [PAR_COMPS];
+
+   always_ff @(posedge clock) begin
+     for (int p=0; p<PAR_COMPS; p++) begin
+       offset[p] <= zero_pixel - PAR_COMPS + p; 
+       if ((0 <= offset[p]) && (offset[p] < IMAGE_SIZE)) begin
+         if (p_image_no == 0) output_buffer[offset[p]] <= filter_sums[p] + bias_memory[out_image_no];
+         else                 output_buffer[offset[p]] <= filter_sums[p] + output_buffer[offset[p]];
+       end
+     end
+   end
 
 /*
    // --------------------------------------------------------------------
@@ -330,7 +343,7 @@ module convolution #(
    always_comb begin
      case (rx_state)
        RX_IDLE  : if (receive) next_rx_state = RX_RECV;
-       RX_RECV  : if ((in_index == IMAGE_SIZE - PAR_COMPS) &&
+       RX_RECV  : if ((in_index == IMAGE_SIZE - 1) &&
                       (in_image_no == input_images - 1)) next_rx_state = RX_DONE;
        RX_DONE  : next_rx_state = RX_IDLE;
        default  : next_rx_state = RX_IDLE;
@@ -396,8 +409,8 @@ module convolution #(
        ST_RX_DONE : next_state = ST_START;
        ST_START   : next_state = ST_PX;                                     // start of all processing
        ST_PX      : next_state = ST_PROCESS;                                // start of processing one image
-       ST_PROCESS : if (p_index == IMAGE_SIZE - PAR_COMPS) next_state = ST_FLUSH;
-       ST_FLUSH   : if (zero_pixel == IMAGE_SIZE) next_state = ST_PX_DONE;
+       ST_PROCESS : if (p_index >= IMAGE_SIZE - PAR_COMPS) next_state = ST_FLUSH;
+       ST_FLUSH   : if (zero_pixel >= IMAGE_SIZE) next_state = ST_PX_DONE;
        ST_PX_DONE : if ((p_image_no + 1) < input_images) next_state = ST_PX;
                     else next_state = ST_TX;
        ST_TX      : next_state = ST_SEND;                                   // done processing image, send
