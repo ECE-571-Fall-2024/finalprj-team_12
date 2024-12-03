@@ -293,8 +293,6 @@ module testbench;
    
     logic ret = 1;
 
-    if (a == b) $display("Seems the same... ");
-
     foreach(a[i,r,c]) begin
       if (a[i][r][c] != b[i][r][c]) begin
         $display("Miscompare at image=%1d row=%1d col=%1d expected=%4x found=%4x ", i, r, c, a[i][r][c], b[i][r][c]);

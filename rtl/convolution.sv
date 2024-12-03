@@ -93,21 +93,16 @@ module convolution #(
      end
      $write("\n\n");
    endfunction
-/*
-   function automatic logic in_bounds(int r, int c);
-     return ((r >= 0) && (r < IMAGE_HEIGHT) && (c >= 0) && (c < IMAGE_WIDTH));
-   endfunction
-*/
+
    // signals, enums for input and output state machines
 
    logic start_receive, receiving,  done_receive;
-   logic start_process, processing, done_process, processing_d1, processing_d2;
+   logic start_process, processing, done_process; 
    logic start_send,    sending,    done_send;
    logic send, receive;
    logic shifting;
-   logic image_loaded, image_sent;
 
-   logic [$clog2(IMAGE_SIZE):0] in_index, out_index, buff_out_index, buff_out_index_d1, buff_out_index_d2;
+   logic [$clog2(IMAGE_SIZE):0] in_index, out_index;
    logic signed [$clog2(IMAGE_SIZE + 2 * SHIFT_REGISTER_SIZE):0] p_index, head_pixel, zero_pixel, tail_pixel;
 
    typedef enum {ST_IDLE, ST_RX, ST_RECV, ST_RX_DONE, ST_START, ST_PX, ST_PROCESS, ST_FLUSH, ST_PX_DONE, ST_TX, ST_SEND, ST_TX_DONE, ST_DONE} st_state_type;
@@ -132,6 +127,8 @@ module convolution #(
        in_row <= '0;
        in_col <= '0;
        in_image_no <= '0;
+       // foreach(images[i,r,c]) images[i][r][c] <= '0;
+       images <= '{default:0};
      end else begin
        if (features_in.ready && features_in.valid) begin
          images[in_image_no][in_index] = features_in.features[0];
@@ -152,60 +149,7 @@ module convolution #(
        in_image_no <= '0;
      end
    end
-/*
-   always @(posedge clock, negedge reset_n) begin
-     if (reset_n == 0) begin
-       in_index    <= '0; 
-       in_image_no <= '0;
-     end else begin
-       if (features_in.ready && features_in.valid) begin
-         images[in_image_no][in_index] = features_in.features[0];
-         if ((in_index + 1) < IMAGE_SIZE) in_index <= in_index + 1;
-         else begin
-           in_index <= '0;
-           in_image_no <= in_image_no + 1;
-         end
-       end
-       if (done_receive) begin 
-         in_index    <= '0;
-         in_image_no <= '0;
-       end
-     end
-   end
-*/
-/*
-   // --------------------------------------------------------------------
-   // process to compute processing indicies
-   // --------------------------------------------------------------------
 
-   always @(posedge clock, negedge reset_n) begin
-     if (reset_n == 0) begin
-       p_row      <= '0; 
-       p_col      <= '0;
-       p_image_no <= '0;
-     end else begin
-       if (processing) begin
-         p_row      <= '0; 
-         p_col      <= '0;
-         p_image_no <= '0;
-       end
-       if (state == ST_PROCESS) begin
-         if ((p_col + PAR_COMPS) < IMAGE_WIDTH) p_col <= p_col + PAR_COMPS;
-         else                                   p_col <= '0;
-
-         if ((p_col + PAR_COMPS) >= IMAGE_WIDTH) begin
-           if ((p_row + 1) < IMAGE_HEIGHT) p_row <= p_row + 1;
-           else                            p_row <= '0;
-         end
-
-         if (((p_col + PAR_COMPS) >= IMAGE_WIDTH) && ((p_row + 1) >= IMAGE_HEIGHT)) begin
-           p_image_no <= p_image_no + 1;
-           //$display("incremented p_image_no");
-         end
-       end
-     end
-   end  
-*/
    // -------------------------------------------------------------------
    // shift register for performing multiplication
    // -------------------------------------------------------------------
@@ -214,14 +158,14 @@ module convolution #(
 
    generate 
      for (sr=0; sr<SHIFT_REGISTER_SIZE - PAR_COMPS; sr++) begin : shift_reg_loop
-       always @(posedge clock, negedge reset_n) begin
+       always_ff @(posedge clock, negedge reset_n) begin
          if (reset_n == 0)  sh_reg[sr] <= '0;
          else if (processing) sh_reg[sr] <= sh_reg[sr+PAR_COMPS];
        end
      end
 
      for (p=0; p<PAR_COMPS; p++) begin : shift_reg_load
-       always @(posedge clock, negedge reset_n) begin
+       always_ff @(posedge clock, negedge reset_n) begin
          if (reset_n == 0) sh_reg[p + SHIFT_REGISTER_SIZE - PAR_COMPS] <= '0;
          else if (shifting) begin
            sh_reg[p + SHIFT_REGISTER_SIZE - PAR_COMPS] <= (head_pixel + p < F_IMAGE_SIZE-1) ? images[p_image_no][p_index + p] : '0;
@@ -233,7 +177,7 @@ module convolution #(
      end 
    endgenerate
 
-   always @(posedge clock, negedge reset_n) begin
+   always_ff @(posedge clock, negedge reset_n) begin
      if (reset_n == 0) p_index <= '0;
      else begin
        if (start_process) p_index <= '0;
@@ -241,7 +185,7 @@ module convolution #(
      end
    end
 
-   always @(posedge clock, negedge reset_n) begin
+   always_ff @(posedge clock, negedge reset_n) begin
      if (reset_n == 0) p_image_no <= '0;
      else begin
        if (done_receive || done_send) p_image_no <= '0;
@@ -249,7 +193,7 @@ module convolution #(
      end
    end
 
-   always @(posedge clock, negedge reset_n) begin
+   always_ff @(posedge clock, negedge reset_n) begin
      if (reset_n == 0) out_image_no <= '0;
      else begin
        if (state == ST_DONE) out_image_no <= '0;
@@ -272,19 +216,19 @@ module convolution #(
          for (c=0; c<FILTER_WIDTH; c++) begin
            assign product_array[p][r][c] = weight_memory[out_image_no][p_image_no][r][c] * sh_reg[r * F_IMAGE_WIDTH + c + p] >>> weight_frac_bits;
          end
-         always @(posedge clock, negedge reset_n) begin
+         always_ff @(posedge clock, negedge reset_n) begin
            if (reset_n == 0) row_sums[p][r] <= '0;
            else              row_sums[p][r] <= product_array[p][r].sum();
          end
        end
-       always @(posedge clock, negedge reset_n) begin
+       always_ff @(posedge clock, negedge reset_n) begin
          if (reset_n == 0) filter_sums[p] <= '0;
          else              filter_sums[p] <= row_sums[p].sum();
        end
      end
    endgenerate
 
-   always @(posedge clock, negedge reset_n) begin
+   always_ff @(posedge clock, negedge reset_n) begin
      if (reset_n == 0) head_pixel <= -1;
      else begin
        if (done_process) head_pixel <= -1;
@@ -295,39 +239,6 @@ module convolution #(
    // --------------------------------------------------------------------
    // logic to accumulate filter_sums into output image
    // --------------------------------------------------------------------      
-
-   always_ff @(posedge clock, negedge reset_n) begin
-     if (reset_n == 0) buff_out_index <= '0;
-     else begin
-       if (start_process) buff_out_index <= '0;
-       if ((processing) && (zero_pixel >= 0)) buff_out_index <= buff_out_index + PAR_COMPS;
-     end
-   end
-
-   // delayed values for out_index
-
-   always_ff @(posedge clock) buff_out_index_d1 <= buff_out_index;
-   always_ff @(posedge clock) buff_out_index_d2 <= buff_out_index_d1;
-
-   always_ff @(posedge clock) processing_d1 <= processing;
-   always_ff @(posedge clock) processing_d2 <= processing_d1;
-/*
-   always_ff @(posedge clock) begin
-     if ((processing_d2) && (zero_pixel - 2 >= 0) && (zero_pixel - 2 < IMAGE_SIZE)) begin  // -2 to account for pipeline
-       for (int p=0; p<PAR_COMPS; p++) begin
-         if (p_image_no == 0) begin
-           output_buffer[buff_out_index_d2 + p] <= bias_memory[out_image_no] + filter_sums[p];
-           //$display("(1) set output_buffed[%d] = %4x ", buff_out_index_d2 + p, bias_memory[out_image_no] + filter_sums[p]);
-           //$display("bias_memory[%1d] = %4x filter_sums[%1d] = %4d ", out_image_no, bias_memory[out_image_no], p, filter_sums[p]);
-         end else begin
-           output_buffer[buff_out_index_d2 + p] <= output_buffer[buff_out_index_d2 + p] + filter_sums[p];
-           //$display("(2) set output_buffed[%d] = %4x ", buff_out_index_d2 + p, output_buffer[buff_out_index_d2 + p] + filter_sums[p]);
-           //$display("output_buffer[%1d] = %4x filter_sums[%1d] = %4d ", buff_out_index_d2 + p, output_buffer[buff_out_index_d2 + p], p, filter_sums[p]);
-         end
-       end
-     end
-   end
- */
 
    logic signed [$clog2(IMAGE_SIZE):0] offset [PAR_COMPS];
 
@@ -340,48 +251,13 @@ module convolution #(
 
          // to show efficacy of testcase induce failure will randomly corrupt output
          if (INDUCE_FAILURE) if ($urandom_range(0, 99) == 5) begin
-           output_buffer[offset[p]] = $urandom_range(0,1023);
-           $display("Failure induced! ");
+           output_buffer[offset[p]] <= $urandom_range(0,1023);
+           // $display("Failure induced!");
          end
 
        end
      end
    end
-
-/*
-   // --------------------------------------------------------------------
-   // logic to perform multiply/accumulate
-   // --------------------------------------------------------------------
-
-   genvar p, r, c;
-
-   generate 
-     for (p=0; p<PAR_COMPS; p++) begin
-       for (r=0; r<FILTER_HEIGHT; r++) begin
-         for (c=0; c<FILTER_WIDTH; c++) begin
-           always_comb begin
-             product_array[p][r][c] = '0;
-             rr[p][r][c] = p_row - FILTER_HEIGHT/2 + r;
-             cc[p][r][c] = p_col - FILTER_HEIGHT/2 + c;
-             if (multiply_active & in_bounds(rr,cc)) 
-                  product_array[p][r][c] 
-                     = (input_image[in_image][rr[p][r][c]][cc[p][r][c]] 
-                       * weight_memory[out_image][in_image][r][c]) 
-                       >>> feature_frac_bits;
-           end
-         end
-         always @(posedge clock, negedge reset_n) begin
-           if (reset_n == 0) row_sum[p][r] <= '0;
-           else              row_sum[p][r] <= product_array[p][r].sum();
-         end  
-       end
-       always @(posedge clock, negedge reset_n) begin
-         if (reset_n == 0) filter_sum[p] <= '0;
-         else              filter_sum[p] <= row_sum.sum();
-       end
-     end
-   endgenerate   
-*/
 
    // --------------------------------------------------------------------
    // state machine to read in features
@@ -398,7 +274,7 @@ module convolution #(
      endcase
    end
 
-   always @(posedge clock, negedge reset_n) begin
+   always_ff @(posedge clock, negedge reset_n) begin
      if (reset_n == 0) rx_state = RX_IDLE;
      else rx_state = next_rx_state;
    end
@@ -414,7 +290,7 @@ module convolution #(
 
    assign out_index = out_row * F_IMAGE_WIDTH + out_col;
 
-   always @(posedge clock, negedge reset_n) begin
+   always_ff @(posedge clock, negedge reset_n) begin
      if (reset_n == 0) begin
        out_row <= '0;
        out_col <= '0;
@@ -448,14 +324,13 @@ module convolution #(
      endcase
    end
 
-   always @(posedge clock, negedge reset_n) begin
+   always_ff @(posedge clock, negedge reset_n) begin
      if (reset_n == 0) tx_state = TX_IDLE;
      else tx_state = next_tx_state;
    end
 
    assign features_out.valid = tx_state == TX_SEND;
    assign features_out.features[0] = (output_buffer[out_index]>0) ? output_buffer[out_index] : '0;
-   // always @(posedge clock) if (features_out.valid && features_out.ready) $display("%4x ", features_out.features[0]);
 
    // --------------------------------------------------------------------
    // state machine to orchestrate convolution
@@ -482,7 +357,7 @@ module convolution #(
      endcase
    end
       
-   always @(posedge clock, negedge reset_n) begin
+   always_ff @(posedge clock, negedge reset_n) begin
      if (reset_n == 0) state = ST_IDLE;
      else state = next_state;
    end
@@ -502,56 +377,5 @@ module convolution #(
    assign receive  = start_receive;
    assign send     = start_send;
    assign shifting = processing; 
-
-/*
-   // --------------------------------------------------------------------
-   // behavioral code to perform convolution - todo: make real hardware for this
-   // --------------------------------------------------------------------
-
-   initial begin
-     send = 0;
-     receive = 0;
-     @(posedge reset_n);
-     @(posedge clock);
-     forever begin
-
-       receive = 1;
-       @(posedge clock);
-       receive = 0;
-       while (rx_state != RX_DONE) @(posedge clock);
-       @(posedge clock);
-
-       for (int o=0; o<output_images; o++) begin
-         for (int i=0; i<input_images; i++) begin
-           for (int row=0; row<IMAGE_WIDTH; row++) begin
-             for (int col=0; col<IMAGE_HEIGHT; col++) begin
-               sum = 0;
-               for (int fr=0; fr<FILTER_WIDTH; fr++) begin
-                 for (int fc=0; fc<FILTER_HEIGHT; fc++) begin
-                   r = row - ((FILTER_HEIGHT-1)/2) + fr;
-                   c = col - ((FILTER_WIDTH-1)/2) + fc;
-                   factor_1 = images[i][r][c];
-                   factor_2 = weight_memory[o][i][fr][fc];
-                   product = (factor_1 * factor_2) >>> 8;
-                   if (in_bounds(r, c)) sum += product; 
-                 end
-               end
-               output_buffer[row][col] = (i==0) ? sum + bias_memory[o] : sum + output_buffer[row][col];
-               if ((i+1) == input_images) if (output_buffer[row][col]<0) output_buffer[row][col] = '0;
-             end
-           end
-         end
-
-         send = 1;
-         @(posedge clock);
-         send = 0;
-         while (tx_state != TX_DONE) @(posedge clock);
-         @(posedge clock);
-
-       end
-     end
-   end
-*/
-//   always @(posedge clock) if (shifting) print_shift_register(sh_reg);
 
 endmodule : convolution

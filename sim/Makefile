@@ -6,9 +6,11 @@ SW   = ../cpp
 
 VLIB = $(QUESTA_HOME)/bin/vlib
 VMAP = $(QUESTA_HOME)/bin/vmap
-VLOG = $(QUESTA_HOME)/bin/vlog +acc=all -work work
-#VSIM = $(QUESTA_HOME)/bin/vsim -voptargs=+acc -work work -sv_lib softmax
-VSIM = $(QUESTA_HOME)/bin/vsim -debugdb -work work -sv_lib softmax
+#VLOG = $(QUESTA_HOME)/bin/vlog +acc=all -work work
+VLOG = $(QUESTA_HOME)/bin/vlog +acc -work work
+VSIM = $(QUESTA_HOME)/bin/vsim -voptargs=+acc -work work -sv_lib softmax
+#VSIM = $(QUESTA_HOME)/bin/vsim -debugdb -work work -sv_lib softmax
+#VSIM = $(QUESTA_HOME)/bin/vsim +acc -debugdb -work work -sv_lib softmax
 
 .PHONY: all compile sim gui clean
 
@@ -19,6 +21,7 @@ all:
 	@echo "   - compile = analyze all input hdl files "
 	@echo "   - sim     = run simulation in Questa (command line) "
 	@echo "   - gui     = run simulation in Questa with GUI "
+	@echo "   - fail    = run simulation with induced failure "
 	@echo " "
 
 gui: compile
@@ -26,6 +29,9 @@ gui: compile
 
 sim: compile
 	$(VSIM) -c testbench -do sim_run.do
+
+fail: compile
+	$(VSIM) -c testbench -do sim_run.do -g INDUCE_FAILURE=1
 
 compile: clean softmax.so
 	rm -rf ./work

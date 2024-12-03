@@ -142,7 +142,7 @@ module testbench;
         predictions[d] = prediction_out;
         @(posedge clock);
         real_prediction = real'(predictions[d]) / real'(32'h100);
-        $display("prediction[%1d] = %f (%04x) ", d, real_prediction, predictions[d]);
+        $display("prediction[%1d] = %5.3f (%04x) ", d, real_prediction, predictions[d]);
       end
 
       prediction_out_ready = 0;
