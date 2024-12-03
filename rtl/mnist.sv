@@ -63,6 +63,7 @@ module mnist(
         .FILTER_WIDTH     (3),
         .input_images    (20),
         .output_images   (50),
+        .PAR_COMPS        (2),
         .weight_file ("../weights/conv2d_2_weights.hex"),
         .bias_file ("../weights/conv2d_2_biases.hex")
     )u_convolution_2 (

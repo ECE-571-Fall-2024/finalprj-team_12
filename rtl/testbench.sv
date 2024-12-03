@@ -110,7 +110,7 @@ module testbench;
     @(posedge reset_n);
     @(posedge clock);
 
-    repeat (num_tests) begin // there are 20 images in the stimulus file
+    repeat (num_tests) begin 
 
       repeat(100) @(posedge clock);
     
