@@ -30,25 +30,25 @@ module testbench;
 
   feature_if #(NUM_FEATURES) features_in(), features_out();
 
-  // Function to generate a random vector (static array version)
-  function automatic void generate_random_vector(output feature_type vector[INPUT_VECTOR_LENGTH]);
+  // Function to generate a random vector
+  function automatic void generate_random_vector(ref feature_type vector[]);
     foreach (vector[i]) begin
       vector[i] = $urandom_range(-256, 255);
     end
   endfunction
 
-  // Function to generate a zero vector (static array version)
-  function automatic void generate_zero_vector(output feature_type vector[INPUT_VECTOR_LENGTH]);
+  // Function to generate a zero vector
+  function automatic void generate_zero_vector(ref feature_type vector[]);
     foreach (vector[i]) vector[i] = 0;
   endfunction
 
-  // Compute dense layer output (expected, static array version)
+  // Compute dense layer output (expected)
   function automatic void compute_dense_output(
-    input feature_type input_vector[INPUT_VECTOR_LENGTH],
+    input feature_type input_vector[],
     input weight_type weight_memory[],
     input weight_type bias_memory[],
     input int relu_enable,
-    output feature_type output_vector[OUTPUT_VECTOR_LENGTH]
+    output feature_type output_vector[]
   );
     for (int o = 0; o < OUTPUT_VECTOR_LENGTH; o++) begin
       sum_type sum = bias_memory[o];
@@ -60,7 +60,7 @@ module testbench;
     end
   endfunction
 
-  // Display a vector (static array version)
+  // Display a vector
   task automatic display_vector(input feature_type vector[], input string vector_name);
     $display("%s:", vector_name);
     foreach (vector[i]) $write("%6.3f ", feature_to_real(vector[i]));
