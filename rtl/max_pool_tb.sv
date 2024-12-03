@@ -1,23 +1,46 @@
-import mnist_pkg::*;
-module tb_max_pool;
+import mnist_pkg::feature_type;
 
-  // Parameters
-  parameter int ROW_STRIDE    = 2;
-  parameter int COL_STRIDE    = 2;
-  parameter int IMAGE_HEIGHT  = 4;
-  parameter int IMAGE_WIDTH   = 4;
-  parameter int CLOCK_PERIOD  = 2;
+module testbench;
 
-  // Clock and Reset
+  // Parameters for the image and pooling dimensions
+  parameter IMAGE_HEIGHT  = 4;  
+  parameter IMAGE_WIDTH   = 4;
+  parameter ROW_STRIDE    = 2;
+  parameter COL_STRIDE    = 2;
+  parameter OUT_HEIGHT    = IMAGE_HEIGHT / ROW_STRIDE;
+  parameter OUT_WIDTH     = IMAGE_WIDTH / COL_STRIDE;
+
+  // Clock and reset signals
   logic clock;
   logic reset_n;
 
-  // Input and output matrices
-  feature_type input_image[IMAGE_HEIGHT][IMAGE_WIDTH];
-  feature_type output_image[IMAGE_HEIGHT / ROW_STRIDE][IMAGE_WIDTH / COL_STRIDE];
-  feature_type expected_output[IMAGE_HEIGHT / ROW_STRIDE][IMAGE_WIDTH / COL_STRIDE];
+  feature_if features_in();
+  feature_if features_out();
 
-  // Instantiating the DUT
+  // Interface signals for the DUT
+  logic features_in_valid, features_out_ready;
+  logic features_out_valid, features_in_ready;
+  feature_type features_in_data, features_out_data;
+
+  // Input and output feature maps
+  feature_type input_image[IMAGE_HEIGHT][IMAGE_WIDTH];
+  feature_type expected_output_image[OUT_HEIGHT][OUT_WIDTH];
+  feature_type output_image[OUT_HEIGHT][OUT_WIDTH];
+
+  // Clock generation (10ns period)
+  initial begin
+    clock = 0;
+    forever #5 clock = ~clock;
+  end
+
+  // Reset generation
+  initial begin
+    reset_n = 0;
+    #20 reset_n = 1;  // Deassert reset after 20ns
+	$display ("Process reset");
+  end
+
+  // Instantiate the DUT
   max_pool #(
     .ROW_STRIDE(ROW_STRIDE),
     .COL_STRIDE(COL_STRIDE),
@@ -26,107 +49,98 @@ module tb_max_pool;
   ) u_max_pool (
     .clock(clock),
     .reset_n(reset_n),
-    .features_in.features[0](input_image[0][0]),  // Connects the input matrix
-    .features_out.features[0](output_image[0][0]) // Connects the output matrix
+    .features_in(features_in),
+    .features_out(features_out)
   );
 
-  // Clock
-  initial begin
-    clock = 0;
-    forever #(CLOCK_PERIOD / 2) clock = ~clock;
-  end
+  //Task to load an input image and expected max-pooling result
+  task automatic load_image_and_expected_output();
+    input_image = '{'{8, 1, 5, 3}, '{6, 7, 2, 4}, '{9, 0, 3, 2}, '{1, 5, 6, 8}};
+    expected_output_image = '{'{8, 5}, '{9, 8}};
+	$display("Input image: ", input_image);
+  endtask
 
-  // Reset Generation
-  initial begin
-    reset_n = 0;
-    #10 reset_n = 1;
-  end
-
-  // Compute Expected Max-Pooling Output
-  function automatic void compute_maxpool_output(
-    input  feature_type in_image[IMAGE_HEIGHT][IMAGE_WIDTH],
-    output feature_type out_image[IMAGE_HEIGHT / ROW_STRIDE][IMAGE_WIDTH / COL_STRIDE]
-  );
-    for (int row = 0; row < IMAGE_HEIGHT; row += ROW_STRIDE) begin
-      for (int col = 0; col < IMAGE_WIDTH; col += COL_STRIDE) begin
-        out_image[row / ROW_STRIDE][col / COL_STRIDE] =
-          max(max(in_image[row][col], in_image[row][col + 1]),
-              max(in_image[row + 1][col], in_image[row + 1][col + 1]));
+  // Task to drive the input image to the DUT
+  task automatic drive_input();
+    features_in.valid = 1;
+    for (int row = 0; row < IMAGE_HEIGHT; row++) begin
+      for (int col = 0; col < IMAGE_WIDTH; col++) begin
+        features_in.features[0] = input_image[row][col];
+        @(posedge clock);
+        while (!features_in.ready) @(posedge clock);
       end
     end
-  endfunction
+    features_in.valid = 0;
+  endtask
 
-  // Task to display Matrix
-  task automatic display_matrix(
-    input feature_type matrix[][], input string label
-  );
-    $display("%s:", label);
-    foreach (matrix[row][col]) begin
-      $write("%4d ", matrix[row][col]);
-      if (col == $size(matrix[row]) - 1) $write("\n");
+  // Task to capture the output from the DUT
+  task automatic capture_output();
+    @(posedge features_out.valid);
+    for (int row = 0; row < OUT_HEIGHT; row++) begin
+      for (int col = 0; col < OUT_WIDTH; col++) begin
+        output_image[row][col] = features_out.features[0];
+        @(posedge clock);
+      end
     end
   endtask
 
-  // Test Cases
+  // Task to compare the output with the expected output
+  task automatic compare_output();
+    int mismatches = 0;
+    for (int row = 0; row < OUT_HEIGHT; row++) begin
+      for (int col = 0; col < OUT_WIDTH; col++) begin
+        if (output_image[row][col] !== expected_output_image[row][col]) begin
+          $display("Mismatch at [%0d][%0d]: Expected %d, Got %d",
+                   row, col, expected_output_image[row][col], output_image[row][col]);
+          mismatches++;
+        end
+      end
+    end
+
+    if (mismatches == 0)
+      $display("Test Passed!");
+    else
+      $display("Test Failed with %d mismatches.", mismatches);
+  endtask
+
+  // Task to display input and output images
+  task automatic display_images();
+    $display("Input Image:");
+    for (int row = 0; row < IMAGE_HEIGHT; row++) begin
+      for (int col = 0; col < IMAGE_WIDTH; col++) begin
+        $write("%3d ", input_image[row][col]);
+      end
+      $write("\n");
+    end
+
+    $display("Expected Output:");
+    for (int row = 0; row < OUT_HEIGHT; row++) begin
+      for (int col = 0; col < OUT_WIDTH; col++) begin
+        $write("%3d ", expected_output_image[row][col]);
+      end
+      $write("\n");
+    end
+
+    $display("DUT Output:");
+    for (int row = 0; row < OUT_HEIGHT; row++) begin
+      for (int col = 0; col < OUT_WIDTH; col++) begin
+        $write("%3d ", output_image[row][col]);
+      end
+      $write("\n");
+    end
+  endtask
+
+  // Main Testbench Logic
   initial begin
+    load_image_and_expected_output();  // Load image and expected output
     @(posedge reset_n);
 
-    // Test Case 1: All Zeros
-    input_image = '{'{0, 0, 0, 0}, '{0, 0, 0, 0}, '{0, 0, 0, 0}, '{0, 0, 0, 0}};
-    compute_maxpool_output(input_image, expected_output);
-    #10;
-    display_matrix(input_image, "Test Case_1 all_zeros");
-    display_matrix(output_image, "Output Image");
-    display_matrix(expected_output, "Expected Output");
+    drive_input();  // Drive input to DUT
+    capture_output();  // Capture DUT output
+    compare_output();  // Compare DUT output with expected
+    display_images();  // Display input, expected, and output images
 
-    if (output_image == expected_output) $display("Test Case 1 Passed!\n");
-    else $display("Test Case 1 Failed!\n");
-
-    // Test Case 2: All Ones
-    input_image = '{'{1, 1, 1, 1}, '{1, 1, 1, 1}, '{1, 1, 1, 1}, '{1, 1, 1, 1}};
-    compute_maxpool_output(input_image, expected_output);
-    #10;
-    display_matrix(input_image, "Test Case_2 all_ones");
-    display_matrix(output_image, "Output Image");
-    display_matrix(expected_output, "Expected Output");
-
-    if (output_image == expected_output) $display("Test Case 2 Passed!\n");
-    else $display("Test Case 2 Failed!\n");
-
-    // Test Case 3: Increasing Sequence
-    input_image = '{
-      '{1, 2, 3, 4},
-      '{5, 6, 7, 8},
-      '{9, 10, 11, 12},
-      '{13, 14, 15, 16}
-    };
-    compute_maxpool_output(input_image, expected_output);
-    #10;
-    display_matrix(input_image, "Test Case 3 increasing numbers);
-    display_matrix(output_image, "Output Image");
-    display_matrix(expected_output, "Expected Output");
-
-    if (output_image == expected_output) $display("Test Case 3 Passed!\n");
-    else $display("Test Case 3 Failed!\n");
-
-    // Test Case 4: Random Values
-    input_image = '{
-      '{12, 54, 29, 91},
-      '{38, 100, 76, 45},
-      '{62, 43, 19, 81},
-      '{85, 24, 74, 93}
-    };
-    compute_maxpool_output(input_image, expected_output);
-    #10;
-    display_matrix(input_image, "Test Case 4 Random Values)");
-    display_matrix(output_image, "Output Image");
-    display_matrix(expected_output, "Expected Output");
-
-    if (output_image == expected_output) $display("Test Case 4 Passed!\n");
-    else $display("Test Case 4 Failed!\n");
-
-    $finish;
+    $finish;  // End simulation
   end
 
 endmodule
-`
