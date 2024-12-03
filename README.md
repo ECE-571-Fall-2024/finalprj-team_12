@@ -66,7 +66,7 @@ image credit: Ford Motor Company
 
 - [ ] Sai Anurag Kankanala
 - [ ] Russell Klein
-- [ ] Lohit Kumar Rekapali Naga 
+- [ ] Lohith Kumar Rekapali Naga 
 
 ## License
 Free to use, but credit the authors
