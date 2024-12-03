@@ -1,0 +1,44 @@
+/u/lrekapal/ECE571-F24/finalprj-Team_12/rtl/interface.sv {1 {vlog -work work -vopt -sv -stats=none /u/lrekapal/ECE571-F24/finalprj-Team_12/rtl/interface.sv
+QuestaSim-64 vlog 2021.3_1 Compiler 2021.08 Aug 15 2021
+-- Compiling package interface_sv_unit
+-- Importing package mnist_pkg
+-- Compiling interface feature_if
+
+Top level modules:
+	--none--
+
+} {} {}} /u/lrekapal/ECE571-F24/finalprj-Team_12/rtl/dense_ex.sv {1 {vlog -work work -vopt -sv -stats=none /u/lrekapal/ECE571-F24/finalprj-Team_12/rtl/dense_ex.sv
+QuestaSim-64 vlog 2021.3_1 Compiler 2021.08 Aug 15 2021
+-- Compiling package dense_ex_sv_unit
+-- Importing package mnist_pkg
+-- Compiling module dense
+
+Top level modules:
+	dense
+
+} {} {}} /u/lrekapal/ECE571-F24/finalprj-Team_12/rtl/mnist.sv {1 {vlog -work work -vopt -sv -stats=none /u/lrekapal/ECE571-F24/finalprj-Team_12/rtl/mnist.sv
+QuestaSim-64 vlog 2021.3_1 Compiler 2021.08 Aug 15 2021
+-- Compiling package mnist_sv_unit
+-- Importing package mnist_pkg
+-- Compiling module mnist
+
+Top level modules:
+	mnist
+
+} {} {}} /u/lrekapal/ECE571-F24/finalprj-Team_12/rtl/mnist_pkg.sv {1 {vlog -work work -vopt -sv -stats=none /u/lrekapal/ECE571-F24/finalprj-Team_12/rtl/mnist_pkg.sv
+QuestaSim-64 vlog 2021.3_1 Compiler 2021.08 Aug 15 2021
+-- Compiling package mnist_pkg
+
+Top level modules:
+	--none--
+
+} {} {}} /u/lrekapal/ECE571-F24/finalprj-Team_12/dense_test/testbench.sv {1 {vlog -work work -vopt -sv -stats=none /u/lrekapal/ECE571-F24/finalprj-Team_12/dense_test/testbench.sv
+QuestaSim-64 vlog 2021.3_1 Compiler 2021.08 Aug 15 2021
+-- Compiling package testbench_sv_unit
+-- Importing package mnist_pkg
+-- Compiling module testbench
+
+Top level modules:
+	testbench
+
+} {} {}}
