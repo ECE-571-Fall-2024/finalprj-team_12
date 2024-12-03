@@ -21,7 +21,6 @@ Directories
 - [ ] **rtl**        - rtl sources
 - [ ] **sim**        - simulation directory, run your simulations here
 - [ ] **weights**    - questa memory image files for weights and biases
-work       - this directory should be deleted
 
 ## How to run things
 
