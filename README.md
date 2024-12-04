@@ -45,7 +45,7 @@ There are 20 images in the test stimulus file.  For each image, the testbench wi
 
 ### To run the unit tests
 
-In the test directories for the individual layers, there is a testbench that instantiates just that layer and more throughly execerises the module.  The makefile targets are the same as the main makefile.
+In the test directories for the individual layers, there is a testbench that instantiates just that layer and more throughly execerises the module.  The makefile targets are the same as the main makefile.  In the conv_test there is a "cover" makefile target, runs a simulation with line coverage.
 
 ## But, why?
 
