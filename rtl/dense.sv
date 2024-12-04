@@ -2,10 +2,10 @@
 import mnist_pkg::*; 
 
 module dense #(
-   parameter INPUT_SIZE = 784,   // Example: 28x28 image
-   parameter OUTPUT_SIZE = 128,
-   //parameter INPUT_VECTOR_SIZE = 784,   // Example: 28x28 image
-   //parameter OUTPUT_VECTOR_SIZE = 128,   // Output neurons
+   parameter INPUT_VECTOR_LENGTH = 784,   // Example: 28x28 image
+   parameter OUTPUT_VECTOR_LENGTH = 128,
+   //parameter INPUT_VECTOR_LENGTH = 784,   // Example: 28x28 image
+   //parameter OUTPUT_VECTOR_LENGTH = 128,   // Output neurons
    parameter load_weights = 1,
    parameter PAR_COMPS = 1,
    parameter weight_file = "dense_weights.hex",
@@ -21,23 +21,23 @@ module dense #(
 );
 
    // Define memory sizes and types
-   typedef weight_type [INPUT_SIZE] weight_type;
-   typedef feature_type [INPUT_SIZE] input_type;
-   typedef feature_type [OUTPUT_SIZE] output_type; 
+   typedef weight_type [INPUT_VECTOR_LENGTH] weight_type;
+   typedef feature_type [INPUT_VECTOR_LENGTH] input_type;
+   typedef feature_type [OUTPUT_VECTOR_LENGTH] output_type; 
    
-   typedef feature_type [INPUT_SIZE-1:0] input_vector_type;
-   typedef feature_type [OUTPUT_SIZE-1:0] output_vector_type;
+   typedef feature_type [INPUT_VECTOR_LENGTH-1:0] input_vector_type;
+   typedef feature_type [OUTPUT_VECTOR_LENGTH-1:0] output_vector_type;
 
    input_vector_type input_buffer;
    output_vector_type output_buffer;
 
-   feature_type weight_memory[OUTPUT_SIZE][INPUT_SIZE]; // Weight memory for each output neuron
-   feature_type bias_memory[OUTPUT_SIZE]; // Bias memory for each output neuron
+   feature_type weight_memory[OUTPUT_VECTOR_LENGTH][INPUT_VECTOR_LENGTH]; // Weight memory for each output neuron
+   feature_type bias_memory[OUTPUT_VECTOR_LENGTH]; // Bias memory for each output neuron
 
-   logic [$clog2(INPUT_SIZE)-1:0] input_index;
-   logic [$clog2(OUTPUT_SIZE)-1:0] output_index;
+   logic [$clog2(INPUT_VECTOR_LENGTH)-1:0] input_index;
+   logic [$clog2(OUTPUT_VECTOR_LENGTH)-1:0] output_index;
 
-   //logic signed [31:0] sum [OUTPUT_SIZE];
+   //logic signed [31:0] sum [OUTPUT_VECTOR_LENGTH];
    
    logic start_receive, receiving, done_receive;
    logic start_process, processing, done_process;
@@ -62,7 +62,7 @@ module dense #(
      end else begin
        if (features_in.ready && features_in.valid) begin
          input_buffer[input_index] <= features_in.features[0];
-         if ((input_index + 1) < INPUT_SIZE) 
+         if ((input_index + 1) < INPUT_VECTOR_LENGTH) 
            input_index <= input_index + 1;
          else 
            input_index <= 0; // Reset after receiving full input
@@ -76,7 +76,7 @@ module dense #(
    always_comb begin
      case (rx_state)
        RX_IDLE : if (receive) next_rx_state = RX_RECV;
-       RX_RECV : if (input_index == INPUT_SIZE - 1) next_rx_state = RX_DONE;
+       RX_RECV : if (input_index == INPUT_VECTOR_LENGTH - 1) next_rx_state = RX_DONE;
        RX_DONE : next_rx_state = RX_IDLE;
        default : next_rx_state = RX_IDLE;
      endcase
@@ -93,7 +93,7 @@ module dense #(
    // Dense Layer Computation (Multiply-Accumulate for each output neuron)
    //--------------------------------------------------------------------//
    integer i, j;
-   logic signed [$clog2(INPUT_SIZE):0] sum;
+   logic signed [$clog2(INPUT_VECTOR_LENGTH):0] sum;
 
    always_ff @(posedge clock, negedge reset_n) begin
      if (reset_n == 0) begin
@@ -101,10 +101,10 @@ module dense #(
      end else begin
        if (processing) begin
          // Reset sum for each output neuron
-         for (i = 0; i < OUTPUT_SIZE; i++) begin
+         for (i = 0; i < OUTPUT_VECTOR_LENGTH; i++) begin
            sum[i] <= 0;
            // Perform multiply-accumulate for each input and weight
-           for (j = 0; j < INPUT_SIZE; j++) begin
+           for (j = 0; j < INPUT_VECTOR_LENGTH; j++) begin
              sum[i] <= sum[i] + (input_buffer[j] * weight_memory[i][j]);
            end
 		   if (relu && output_buffer[i] < 0) output_buffer[i] = 0;
@@ -123,7 +123,7 @@ module dense #(
        output_index <= 0;
      end else begin
        if (done_process) begin
-         if ((output_index + 1) < OUTPUT_SIZE) 
+         if ((output_index + 1) < OUTPUT_VECTOR_LENGTH) 
            output_index <= output_index + 1;
          else 
            output_index <= 0; // Reset after processing all outputs
