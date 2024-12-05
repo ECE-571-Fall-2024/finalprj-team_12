@@ -25,7 +25,7 @@ all:
 	@echo " "
 
 gui: compile
-	$(VSIM) testbench -do gui_run.do
+	$(VSIM) testbench -do gui_run.do 
 
 sim: compile
 	$(VSIM) -c testbench -do sim_run.do
