@@ -17,7 +17,7 @@ Directories
 - [ ] **data**       - randomly selected digits for testing the full inference
 - [ ] **dense_test** - unit tests for the dense layer
 - [ ] **max_pool**   - unit tests for the max pooling layer
-- [ ] **python**     - python script to testcase data
+- [ ] **python**     - python script to create testcase data
 - [ ] **rtl**        - rtl sources
 - [ ] **sim**        - simulation directory, run your simulations here
 - [ ] **weights**    - questa memory image files for weights and biases
