@@ -93,7 +93,7 @@ module testbench;
   // filters
 
   function automatic void random_filter(ref filter_array filter);
-    std::randomize(filter);
+    bit ret = std::randomize(filter);
   endfunction : random_filter
 
   function automatic void zero_filter(ref filter_array filter);
