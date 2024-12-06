@@ -13,7 +13,7 @@ module mnist(
    output logic           prediction_out_valid,
    input  logic           prediction_out_ready);
 
-   // instantiate features
+   // instantiate interfaces
 
    feature_if             pixels_in();
    feature_if             convolved1();
