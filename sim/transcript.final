@@ -1,0 +1,871 @@
+# vsim -voptargs="+acc" -work work -sv_lib softmax -c testbench -do "sim_run.do" 
+# Start time: 10:38:37 on Dec 06,2024
+# ** Note: (vsim-3812) Design is being optimized...
+# ** Warning: (vopt-10587) Some optimizations are turned off because the +acc switch is in effect. This will cause your simulation to run slowly. Please use -access/-debug to maintain needed visibility. The +acc switch would be deprecated in a future release.
+# Support of the MGLS_LICENSE_FILE and LM_LICENSE_FILE licensing environment variables will be discontinued starting with the 2025.1 release. Please update to using the SALT_LICENSE_SERVER variable.
+# Please contact Siemens EDA Customer Support (https://support.sw.siemens.com/) for assistance.
+# ** Note: (vopt-143) Recognized 3 FSMs in module "convolution(fast)".
+# ** Note: (vopt-143) Recognized 3 FSMs in module "convolution(fast__1)".
+# ** Note: (vopt-143) Recognized 2 FSMs in module "max_pool(fast)".
+# ** Note: (vopt-143) Recognized 2 FSMs in module "max_pool(fast__1)".
+# ** Note: (vopt-143) Recognized 2 FSMs in module "dense(fast)".
+# ** Note: (vopt-143) Recognized 2 FSMs in module "dense(fast__1)".
+# ** Note: (vopt-143) Recognized 2 FSMs in module "softmax(fast)".
+# ** Note: (vsim-12126) Error and warning message counts have been restored: Errors=0, Warnings=1.
+# //  Questa Sim-64
+# //  Version 2024.2 linux_x86_64 May 20 2024
+# //
+# // Unpublished work. Copyright 2024 Siemens
+# //
+# // This material contains trade secrets or otherwise confidential information
+# // owned by Siemens Industry Software Inc. or its affiliates (collectively,
+# // "SISW"), or its licensors. Access to and use of this information is strictly
+# // limited as set forth in the Customer's applicable agreements with SISW.
+# //
+# // This material may not be copied, distributed, or otherwise disclosed outside
+# // of the Customer's facilities without the express written permission of SISW,
+# // and may not be used in any way not expressly authorized by SISW.
+# //
+# Loading sv_std.std
+# Loading work.mnist_pkg(fast)
+# Loading work.testbench_sv_unit(fast)
+# Loading work.testbench(fast)
+# Loading work.mnist_sv_unit(fast)
+# Loading work.mnist(fast)
+# Loading work.interface_sv_unit(fast)
+# Loading work.feature_if(fast__1)
+# Loading work.feature_if(fast__2)
+# Loading work.feature_if(fast__3)
+# Loading work.convolution_sv_unit(fast)
+# Loading work.convolution(fast)
+# Loading work.max_pool_sv_unit(fast)
+# Loading work.max_pool(fast)
+# Loading work.convolution(fast__1)
+# Loading work.max_pool(fast__1)
+# Loading work.dense_sv_unit(fast)
+# Loading work.dense(fast)
+# Loading work.dense(fast__1)
+# Loading work.softmax_sv_unit(fast)
+# Loading work.softmax(fast)
+# Loading ./softmax.so
+# do sim_run.do
+# image height: 28 
+# image width:  28 
+# fimage width: 30 
+# image size:   784 
+# shift reg size: 125 
+# image height: 14 
+# image width:  14 
+# fimage width: 15 
+# image size:   196 
+# shift reg size: 34 
+#                                                         
+#                                                         
+#                                                         
+#                                         7bcc09          
+#                                       50fd59            
+#                                     06a2df20            
+#                                     40fc50              
+#                                     98d0                
+#                     081d          54fd56                
+#                     9da8          a2cd0b                
+#                     fd74        57f981                  
+#                   1bfd3f      0bcecd                    
+#                 1bd3ec25      57fc7e                    
+#                 52fd84        ffef11                    
+#               34e8fc        24fd59                      
+#               87fc7916161616a2fd3f          1407        
+#             16edfcfcfdfcfcfcfcfdbda0404052a9d63f        
+#             32f4b693689367adfcbfb6fcfcfcec931d          
+#                           7efd                          
+#                         10e8d9                          
+#                         77fc8a                          
+#                         7ffc44                          
+#                         1ead67                          
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+# prediction[0] = 0.000 (0000) 
+# prediction[1] = 0.000 (0000) 
+# prediction[2] = 0.000 (0000) 
+# prediction[3] = 0.000 (0000) 
+# prediction[4] = 0.996 (00ff) 
+# prediction[5] = 0.000 (0000) 
+# prediction[6] = 0.000 (0000) 
+# prediction[7] = 0.000 (0000) 
+# prediction[8] = 0.000 (0000) 
+# prediction[9] = 0.000 (0000) 
+# 
+# Predicted:    4 Image label:    4 -- Correct prediction 
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                           74feba06                      
+#                         44f3fda62f                      
+#                       80f0fda0                          
+#                       cefde809                          
+#                     35f0fd74                            
+#                     49fdb306  89b61c                    
+#                     abfd9c  29fefdc2                    
+#                     c2fd9c2ae6fefdd9                    
+#                     c2fdc6abfdfefdd9                    
+#                     c2fdfdfdfdfefdd9                    
+#                     80fcfefef3c0ffda                    
+#                       58d4b10585fdd9                    
+#                               85fdd9                    
+#                               85fdea29                  
+#                               2ffdf33d                  
+#                               09defd54                  
+#                                 6afd54                  
+#                                 19fdbc                  
+#                                 0ed4f976                
+#                                   19be65                
+#                                                         
+#                                                         
+#                                                         
+# prediction[0] = 0.000 (0000) 
+# prediction[1] = 0.000 (0000) 
+# prediction[2] = 0.000 (0000) 
+# prediction[3] = 0.000 (0000) 
+# prediction[4] = 0.676 (00ad) 
+# prediction[5] = 0.000 (0000) 
+# prediction[6] = 0.000 (0000) 
+# prediction[7] = 0.000 (0000) 
+# prediction[8] = 0.000 (0000) 
+# prediction[9] = 0.320 (0052) 
+# 
+# Predicted:    4 Image label:    4 -- Correct prediction 
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                     125b85ffac                          
+#                     a6fdfdfde5b4b43b09                  
+#                   35e6fdfdfdfdfdfdfdba15                
+#                   7cfdfdfdfdfdfdfdfdfd30                
+#                 11bafdfdfdfdd5d2b2f18119                
+#                 21fdfde237281b1a1024                    
+#                 7cfdfd72                                
+#               1cd3fdfdf0bb421815                        
+#             0bc5fdfdfdfdfdfdbe569c28                    
+#             014dabababababababdefdf8ab45                
+#                               a7b562fdf05802            
+#                                   109a9acd762a          
+#                                       058ffd7802        
+#                                       2afdfdfd0f        
+#               12932a07              134cfdfdfd0f        
+#               6bfdfd7d            0dbafdfdfdb008        
+#               53f0fdf7833a3a3a3fdee1fdfdfdfd6a          
+#                 66fdfdfdfdfdfdfdfdfdfdfdfddb2c          
+#                 18d7fdfdfdfdfdfdfdfdfdd6658a            
+#                   2c79a283fdfdfdbd59594b                
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+# prediction[0] = 0.000 (0000) 
+# prediction[1] = 0.000 (0000) 
+# prediction[2] = 0.000 (0000) 
+# prediction[3] = 0.000 (0000) 
+# prediction[4] = 0.000 (0000) 
+# prediction[5] = 0.996 (00ff) 
+# prediction[6] = 0.000 (0000) 
+# prediction[7] = 0.000 (0000) 
+# prediction[8] = 0.000 (0000) 
+# prediction[9] = 0.000 (0000) 
+# 
+# Predicted:    5 Image label:    5 -- Correct prediction 
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                           2189fefee312                  
+#                       0657eafdfdfdfd49                  
+#                     16a9fdf16d59a3fd80                  
+#                   0389fdc91d    73fd80                  
+#                   63fde213      73fdcd34                
+#                 33e8f347        73fdfdad                
+#                 aefd87        36c8fdfdad                
+#                 aefdd2552864dcf8fdfdfd9e                
+#                 aefdfdfdfdfdfdfdfdfdea12                
+#                 21effdfdfdfdac68e6fda9                  
+#                   2d7a9494330a5af6e125                  
+#                             04dbfda0                    
+#                             86fdf12e                    
+#                             ccfd70                      
+#                           68f8d614                      
+#                         1efbfd5e                        
+#                       16dafdf908                        
+#                       4cfdfd64                          
+#                     31f4fee116                          
+#                     55fdfd56                            
+#                                                         
+#                                                         
+# prediction[0] = 0.000 (0000) 
+# prediction[1] = 0.000 (0000) 
+# prediction[2] = 0.000 (0000) 
+# prediction[3] = 0.000 (0000) 
+# prediction[4] = 0.000 (0000) 
+# prediction[5] = 0.000 (0000) 
+# prediction[6] = 0.000 (0000) 
+# prediction[7] = 0.000 (0000) 
+# prediction[8] = 0.000 (0000) 
+# prediction[9] = 0.996 (00ff) 
+# 
+# Predicted:    9 Image label:    9 -- Correct prediction 
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                                 6fffee30                
+#                               70fcfdfd61                
+#                               b7fdfdfd61                
+#                             19d4fdfdf039                
+#                             6efdfdfd68                  
+#                           18d4fdfddb0c                  
+#                           6efdfdfdd6                    
+#                         17d5fdfdef51                    
+#                         b0fdfdfdaa                      
+#                         cafdfdf03a                      
+#                       3bf0fdfd68                        
+#                     12b5fdfdfd47                        
+#                     56fdfdfdbd16                        
+#                     6afdfdd116                          
+#                   0cdcfdfdab                            
+#                   acfdfdfd3a                            
+#                 08e0fdfdd318                            
+#                 63fdfdfd6c                              
+#                 60fcfdfd33                              
+#                   defdfd33                              
+#                                                         
+#                                                         
+#                                                         
+# prediction[0] = 0.000 (0000) 
+# prediction[1] = 0.785 (00c9) 
+# prediction[2] = 0.000 (0000) 
+# prediction[3] = 0.000 (0000) 
+# prediction[4] = 0.043 (000b) 
+# prediction[5] = 0.000 (0000) 
+# prediction[6] = 0.000 (0000) 
+# prediction[7] = 0.137 (0023) 
+# prediction[8] = 0.027 (0007) 
+# prediction[9] = 0.000 (0000) 
+# 
+# Predicted:    1 Image label:    1 -- Correct prediction 
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                           5da1fefefe9713                
+#                       0925dbfdfdfdfdfd9917              
+#                   0362d8fdfdfdfdfdfdfdfdd25c02          
+#                 0fa2fdfdfdfdfdfdfdfdfdfdfdfd1e          
+#               1ba5fdfdfdfdfdc86363638cf9fdfdd217        
+#               53fdfdf8c35d5d19        4fd8fdfd87        
+#             09d8fdfd86                  22d8fdd519      
+#           0279fdfde81d                    6afdfd81      
+#           07fdfdec41                      6afdfd81      
+#           07fdfd89                        6afdfd81      
+#           65fdef1a                        8bfdfd81      
+#           82fdc6                        1eedfdda1f      
+#           e7fd6f                        8bfdfd87        
+#           fefd6f                      21eafdfd5d        
+#           fefd6f                  1e87e6fdfd7002        
+#           91fddc              1b88e9fdfdfdd40b          
+#           82fdfcd96a6a6a6ac2e6ecfdfdfdfda30e            
+#           0ffdfdfdfdfdfdfdfdfdfdfdfdfd700b              
+#           048dfdfdfdfdfdfdfdfdfda1872002                
+#             010f8dfdfdfdfda5630502                      
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+# prediction[0] = 0.996 (00ff) 
+# prediction[1] = 0.000 (0000) 
+# prediction[2] = 0.000 (0000) 
+# prediction[3] = 0.000 (0000) 
+# prediction[4] = 0.000 (0000) 
+# prediction[5] = 0.000 (0000) 
+# prediction[6] = 0.000 (0000) 
+# prediction[7] = 0.000 (0000) 
+# prediction[8] = 0.000 (0000) 
+# prediction[9] = 0.000 (0000) 
+# 
+# Predicted:    0 Image label:    0 -- Correct prediction 
+#                                                         
+#                                                         
+#                     3ca5fdfffea912                      
+#                   61fafeecf9fefea4                      
+#                 21f8eb8f14192ae6fc51                    
+#                 1fca19        5bfeeb                    
+#                               20fefb26                  
+#                               20fefa16                  
+#                               20fef9                    
+#                               20fef9                    
+#                               20fef9                    
+#                               9dfeba                    
+#                             5bf6f526                    
+#                           05e1fe81                      
+#                           9bfeef25                      
+#                         17f2fe2c                        
+#                       4df7fe6502                        
+#                     1cf7fe8303                          
+#                 0658e8fecb09          192937cab627      
+#           237575a7fefefea6c7cdcdcdcdcdebfefefefe6b      
+#           71fefefefefefefefefefefdfaf0f0f0c3977313      
+#           67feec984c4c4c6b4c4c4c4635                    
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+# prediction[0] = 0.000 (0000) 
+# prediction[1] = 0.184 (002f) 
+# prediction[2] = 0.812 (00d0) 
+# prediction[3] = 0.000 (0000) 
+# prediction[4] = 0.000 (0000) 
+# prediction[5] = 0.000 (0000) 
+# prediction[6] = 0.000 (0000) 
+# prediction[7] = 0.000 (0000) 
+# prediction[8] = 0.000 (0000) 
+# prediction[9] = 0.000 (0000) 
+# 
+# Predicted:    2 Image label:    2 -- Correct prediction 
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                           15709797c2977818              
+#                         58defefefefefefed2              
+#                       58fbfefee174c1dae5fb44            
+#                       e0fefe8b0e      1569              
+#                     4ffcfec408                          
+#                   13e7fffe49                            
+#                   1bfffefe29          054ce020          
+#                   14ebfefe43        3ca4fefe24          
+#                     84fefe9303  42bcfcfefedf15          
+#                     1decfefec29cfdfefeee9720            
+#                       b8fefefefefefe6a24                
+#                   0573f0fefefefed53701                  
+#                   8dfefefefefeb302                      
+#                 86fdfedcc3fefea701                      
+#               1becfefe1f3ffefefe05                      
+#               22f9feff5c4ffefefe05                      
+#                 76fefefefefefefe05                      
+#                 0c8efbfefefefed203                      
+#                     5ff8fefefe84                        
+#                       2fb0fea90a                        
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+# prediction[0] = 0.000 (0000) 
+# prediction[1] = 0.000 (0000) 
+# prediction[2] = 0.000 (0000) 
+# prediction[3] = 0.000 (0000) 
+# prediction[4] = 0.000 (0000) 
+# prediction[5] = 0.000 (0000) 
+# prediction[6] = 0.004 (0001) 
+# prediction[7] = 0.000 (0000) 
+# prediction[8] = 0.988 (00fd) 
+# prediction[9] = 0.000 (0000) 
+# 
+# Predicted:    8 Image label:    8 -- Correct prediction 
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                             a3ffec0d                    
+#                           05befdfd56                    
+#                           11fdfdf430                    
+#                           11fdfde8                      
+#                           0ce0fde8                      
+#                           0ff4fde8                      
+#                           11fdfde8                      
+#                           64fdfde8                      
+#                           b2fdfde8                      
+#                           e9fdfda2                      
+#                           bafdfd7c                      
+#                           e9fdfd45                      
+#                           e9fdfd10                      
+#                           e9fdfd10                      
+#                           e9fdcc08                      
+#                           e9fda1                        
+#                         26f2fda1                        
+#                           e9fda1                        
+#                           e9fda1                        
+#                           5fb85d                        
+#                                                         
+#                                                         
+#                                                         
+# prediction[0] = 0.000 (0000) 
+# prediction[1] = 0.992 (00fe) 
+# prediction[2] = 0.000 (0000) 
+# prediction[3] = 0.000 (0000) 
+# prediction[4] = 0.000 (0000) 
+# prediction[5] = 0.000 (0000) 
+# prediction[6] = 0.000 (0000) 
+# prediction[7] = 0.004 (0001) 
+# prediction[8] = 0.000 (0000) 
+# prediction[9] = 0.000 (0000) 
+# 
+# Predicted:    1 Image label:    1 -- Correct prediction 
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                             217d7d7dd3fefea7            
+#                         259af9fdfdfdfdfdfdfd6c          
+#                       26defdfdfdad77209cb84206          
+#                     8af1fde0953406    0307              
+#                   8bfafddf2d          0db2e4d9          
+#                 26edfddf2d            50fdfdc1          
+#               26ddfdaf1a          10acf0fdcb4a          
+#               70fdfd37        136ad9fdfdf548            
+#               94fdfd5f48484848b5fdfdfde32e              
+#               8cfdfdfdfdfdfdfdfdfdfdf361                
+#               1d77c2d8fdcdc2c2eefdfd75                  
+#                     1a470d  0ecafdf443                  
+#                           0da6fdf468                    
+#                           5dfdfdb5                      
+#                         44ebfd831a                      
+#                       09d5fdf63a                        
+#                     37b8fdf86b                          
+#                   0ca7fdf969                            
+#                   e4fdfd69                              
+#                   e4fdd116                              
+#                                                         
+#                                                         
+# prediction[0] = 0.000 (0000) 
+# prediction[1] = 0.000 (0000) 
+# prediction[2] = 0.000 (0000) 
+# prediction[3] = 0.000 (0000) 
+# prediction[4] = 0.000 (0000) 
+# prediction[5] = 0.000 (0000) 
+# prediction[6] = 0.000 (0000) 
+# prediction[7] = 0.000 (0000) 
+# prediction[8] = 0.000 (0000) 
+# prediction[9] = 0.996 (00ff) 
+# 
+# Predicted:    9 Image label:    9 -- Correct prediction 
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#               abfca68c4d25                              
+#               79c0ebfefef8c77328                        
+#                   1253a7f9fefef38b5405                  
+#                         2372a9fefefe62                  
+#                             0439fefe29                  
+#                               05fecd06                  
+#                               43fe9d                    
+#                               97fe62                    
+#                             05c8fe0f                    
+#                             12fefe09                    
+#                             12fefe09                    
+#                             12fef908                    
+#                             34feae                      
+#                             6cfeae                      
+#                             6cfeae                      
+#                             6cfeae                      
+#                             6cfeae                      
+#                             24feb601                    
+#                             12f6fe09                    
+#                               1ee148                    
+#                                                         
+#                                                         
+# prediction[0] = 0.000 (0000) 
+# prediction[1] = 0.000 (0000) 
+# prediction[2] = 0.000 (0000) 
+# prediction[3] = 0.000 (0000) 
+# prediction[4] = 0.000 (0000) 
+# prediction[5] = 0.000 (0000) 
+# prediction[6] = 0.000 (0000) 
+# prediction[7] = 0.996 (00ff) 
+# prediction[8] = 0.000 (0000) 
+# prediction[9] = 0.000 (0000) 
+# 
+# Predicted:    7 Image label:    7 -- Correct prediction 
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                         13464668ddfefe80                
+#                   0937acedfdfdfdfefdfda0                
+#                   7bfdfdfef8e6e6e6fbfda0                
+#                   cefddb4538      e6fd5e                
+#                   ceab          2df5ef19                
+#                   3f3f          88fda2                  
+#                               09fefd2e                  
+#                               7ffeb90d                  
+#                             31feff38                    
+#                           09aefdd80b                    
+#                           59fdfd43                      
+#                         33defd97                        
+#                         a2fee6                          
+#                       55f5f457                          
+#                     13c7fe9c                            
+#                     95fde40f                            
+#                   a4fefea0                              
+#                 72fbfdb909                              
+#                 edf8b30d                                
+#                 dc8b                                    
+#                                                         
+# prediction[0] = 0.000 (0000) 
+# prediction[1] = 0.000 (0000) 
+# prediction[2] = 0.000 (0000) 
+# prediction[3] = 0.000 (0000) 
+# prediction[4] = 0.000 (0000) 
+# prediction[5] = 0.000 (0000) 
+# prediction[6] = 0.000 (0000) 
+# prediction[7] = 0.996 (00ff) 
+# prediction[8] = 0.000 (0000) 
+# prediction[9] = 0.000 (0000) 
+# 
+# Predicted:    7 Image label:    7 -- Correct prediction 
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                         33769afefffb7646                
+#                     06a7f2fdfdfdfdfdfdf51f              
+#                     0efdfdfdfdfdfdfdfdfd6c              
+#                   088cfdfdccc6c6ccfdfdfd22              
+#                   23fdfd9f09  0785fdfdef1d              
+#                   23fdfd5e020486fdfdf644                
+#                   23fdfdfd8fa4fdfdfd81                  
+#                   14d1fdfdfdfdfdfd7103                  
+#                     1dfdfdfdfdfde40c                    
+#                     0efdfdfdfdfdf8cb24                  
+#                   2186fdfdd2dafdfdfd9903                
+#                   acfdfda60a1873f4fdfd0d                
+#                   acfdaf03      56fafd5c                
+#                   acf63d          90fd96                
+#                   acf849        0cbdfd96                
+#                   acfb952f    1066fdfd1f                
+#                   acfdfde63733adfdfdfd0d                
+#                   acfdfdfde3effdfdfde90b                
+#                   54eafdfdfdfdfdfda331                  
+#                     0774fafdfde37432                    
+#                                                         
+#                                                         
+#                                                         
+# prediction[0] = 0.000 (0000) 
+# prediction[1] = 0.000 (0000) 
+# prediction[2] = 0.000 (0000) 
+# prediction[3] = 0.000 (0000) 
+# prediction[4] = 0.000 (0000) 
+# prediction[5] = 0.000 (0000) 
+# prediction[6] = 0.000 (0000) 
+# prediction[7] = 0.000 (0000) 
+# prediction[8] = 0.996 (00ff) 
+# prediction[9] = 0.000 (0000) 
+# 
+# Predicted:    8 Image label:    8 -- Correct prediction 
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                                     45ff78              
+#                                   3af8fd74              
+#                                   86fefd14              
+#                                 6cf2fc8303              
+#                               12e2fdd11e                
+#                             039ffdfd76                  
+#                             27fefdc514                  
+#                           1cbbfef54e                    
+#                           7dfefea4                      
+#                         26fbfde640                      
+#                       019efdfd7d08                      
+#                       29fefee323                        
+#                       a9fefd41                          
+#                     55f9fdc011                          
+#                   4cf6fef410                            
+#                 18a9fdf16d                              
+#                 63f4fe7a                                
+#               0feafedc22                                
+#               adfef23101                                
+#             1ae9fd970f                                  
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+# prediction[0] = 0.000 (0000) 
+# prediction[1] = 0.793 (00cb) 
+# prediction[2] = 0.000 (0000) 
+# prediction[3] = 0.000 (0000) 
+# prediction[4] = 0.070 (0012) 
+# prediction[5] = 0.000 (0000) 
+# prediction[6] = 0.000 (0000) 
+# prediction[7] = 0.078 (0014) 
+# prediction[8] = 0.047 (000c) 
+# prediction[9] = 0.000 (0000) 
+# 
+# Predicted:    1 Image label:    1 -- Correct prediction 
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                                     80ff                
+#                                     ffff                
+#                     8040          80ffff                
+#                 40ffffff          ffff80                
+#                 80ffffbf        80ffff                  
+#                 ffff40          ffffff                  
+#                 ffff          40ffff80                  
+#                 ffff40        80ffff                    
+#                 80ffffbf804080ffffffbf80ffffff80        
+#                 40ffffffffffffffffffffffffff40          
+#                     80ffffffffffffbfbf8040              
+#                           40ffff80                      
+#                           40ffff                        
+#                           ffffff                        
+#                           ffffbf                        
+#                           ffff40                        
+#                         80ff80                          
+#                         bfff80                          
+#                         ffffff80                        
+#                         bfff40                          
+#                                                         
+#                                                         
+#                                                         
+# prediction[0] = 0.000 (0000) 
+# prediction[1] = 0.000 (0000) 
+# prediction[2] = 0.000 (0000) 
+# prediction[3] = 0.000 (0000) 
+# prediction[4] = 0.996 (00ff) 
+# prediction[5] = 0.000 (0000) 
+# prediction[6] = 0.000 (0000) 
+# prediction[7] = 0.000 (0000) 
+# prediction[8] = 0.000 (0000) 
+# prediction[9] = 0.000 (0000) 
+# 
+# Predicted:    4 Image label:    4 -- Correct prediction 
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#             46a880fcfcfcfcfcfffcfca80d                  
+#         052e67fafafafafafafafcfafafa9c15                
+#         57fafafafafafafafafafcfafafafa9619              
+#         fcfafafafac79e9e9e9e9faffafafafa945c11          
+#         fcfada87873d          1987b1fafafafa8a0a        
+#         727152                    2aaffafafafa15        
+#                                     73fafafafa15        
+#                                     1fa7fafafa15        
+#                                     5fe6fafafa15        
+#                                   55effafafafa15        
+#                                   5dfcfcfcfc2d          
+#                                 0d79fafafafa2c          
+#                       330d  074577fafafafafa6506        
+#         5d5c5c5c5c5c5cd0785c6cfafafafafafafafa69        
+#         fcfafafafafafafafafafcfafafafafafafafa91        
+#         fcfafafafafafafafafafcfafafafaae7171710a        
+#         fcfafafafafafafafafafcfafabf5a29                
+#         fcfafafafafafafafafaeb43432b                    
+#         2d52fafafafafafafa3d29                          
+#           0454fafa7c15151502                            
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+# prediction[0] = 0.000 (0000) 
+# prediction[1] = 0.000 (0000) 
+# prediction[2] = 0.996 (00ff) 
+# prediction[3] = 0.000 (0000) 
+# prediction[4] = 0.000 (0000) 
+# prediction[5] = 0.000 (0000) 
+# prediction[6] = 0.000 (0000) 
+# prediction[7] = 0.000 (0000) 
+# prediction[8] = 0.000 (0000) 
+# prediction[9] = 0.000 (0000) 
+# 
+# Predicted:    2 Image label:    2 -- Correct prediction 
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#       2c51    2069696969696a696969696932                
+#       8cf36d  c7fdfdfdfdfdfefdfdfdfdfde6d154            
+#       9dfdf85ee2fbeeeeeeeeefeeeeeeeef0f5fceda4          
+#       69fdfdfd9276                  103fa8fdfd          
+#       4af0fdfda1                        86fdfd          
+#         c0fdfde735                    60f9fdfd          
+#         1dcefdfd99                    86fdfdfd          
+#           a4fdfddf                  0bb1fdfd70          
+#           2fe5fdf65c                91fdfdda18          
+#             78fdfdc608              b3fdfd78            
+#             79fefefe0e            4cfefeff3b            
+#             5cf6f67203            6ffdfdb20b            
+#               4f4f              08e2fdfd42              
+#                               08b7fdfdbd08              
+#                               3cfdfdfd77                
+#                             08affdfdf969                
+#                             3cfdfdfddf                  
+#                             3dfdfde238                  
+#                             0e9cd092                    
+#                                                         
+#                                                         
+# prediction[0] = 0.000 (0000) 
+# prediction[1] = 0.000 (0000) 
+# prediction[2] = 0.000 (0000) 
+# prediction[3] = 0.000 (0000) 
+# prediction[4] = 0.000 (0000) 
+# prediction[5] = 0.000 (0000) 
+# prediction[6] = 0.000 (0000) 
+# prediction[7] = 0.996 (00ff) 
+# prediction[8] = 0.000 (0000) 
+# prediction[9] = 0.000 (0000) 
+# 
+# Predicted:    7 Image label:    7 -- Correct prediction 
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#               034c4c4c6ca986a9aa794c36                  
+#           37beecfefefefef3e0ceedfefef8ecc14b02          
+#           94e48c8c352f2f2412  1e2f2f2f86b6ebbb4405      
+#             1c                              5ef1a3      
+#                                               7efe      
+#                                             07cfa2      
+#                                             a1f329      
+#                                         0562fbf42a      
+#                       0d26266c8484848484b0fefefe42      
+#             0957c6c6c6d8fef9f4f5f4f8fefced96815b0f      
+#           65f4fecbb2b292552c    52cce76f                
+#           fff07806      1d3076c9e3a82c                  
+#           6be0eacfcfcfcfe7ebc88d21                      
+#               034b4b6e4b3a                              
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+# prediction[0] = 0.000 (0000) 
+# prediction[1] = 0.000 (0000) 
+# prediction[2] = 0.371 (005f) 
+# prediction[3] = 0.000 (0000) 
+# prediction[4] = 0.000 (0000) 
+# prediction[5] = 0.000 (0000) 
+# prediction[6] = 0.000 (0000) 
+# prediction[7] = 0.625 (00a0) 
+# prediction[8] = 0.000 (0000) 
+# prediction[9] = 0.000 (0000) 
+# 
+# Predicted:    7 Image label:    2 -- Missed prediction 
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                   80ffffffffffffffff8080                
+#                 80ffffffffffffffffffffff                
+#                 ffffffffffffffffffffffff                
+#               40ffffffffffbf8080ffffffff                
+#               80ffffff80        40ffffff                
+#               80ffffff80          ffffff                
+#               40ffffffbf40      80ffffff                
+#                 bfffffffff8080  ffffffff                
+#                 40bfffffffffffffffffffff                
+#                     80ffffffffffffffffbf                
+#                       40ffffffffffffff                  
+#                           bfffffffffff                  
+#                           40ffffffffff40                
+#                           bfffffffffffff                
+#                           ffffffffffffff                
+#                         80ffffffffffffff                
+#                         ffffffffffffffff                
+#                       80ffffffffffffffff                
+#                         ffffffffffffff40                
+#                         40ffffbf8040                    
+#                                                         
+#                                                         
+#                                                         
+# prediction[0] = 0.000 (0000) 
+# prediction[1] = 0.000 (0000) 
+# prediction[2] = 0.000 (0000) 
+# prediction[3] = 0.000 (0000) 
+# prediction[4] = 0.000 (0000) 
+# prediction[5] = 0.000 (0000) 
+# prediction[6] = 0.000 (0000) 
+# prediction[7] = 0.000 (0000) 
+# prediction[8] = 0.965 (00f7) 
+# prediction[9] = 0.031 (0008) 
+# 
+# Predicted:    8 Image label:    8 -- Correct prediction 
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                     66fcfcd61f                          
+#                     66fafafc95                          
+#                     66fafafc95                          
+#                     14aafafc95                          
+#                       99fcffab14                        
+#                       5be7fcfa64                        
+#                         cafcfa64                        
+#                         cafcfa64                        
+#                         cbfefc820a                      
+#                         cafcfafa31                      
+#                         cafcfafa31                      
+#                         cafcfafa31                      
+#                         a3fefcfcfc                      
+#                           fcfafafa                      
+#                           fcfafafa                      
+#                           5afafafa                      
+#                           29defcfc341f                  
+#                             66fafafc95                  
+#                             28befade3c                  
+#                               97faca                    
+#                                                         
+#                                                         
+#                                                         
+# prediction[0] = 0.000 (0000) 
+# prediction[1] = 0.996 (00ff) 
+# prediction[2] = 0.000 (0000) 
+# prediction[3] = 0.000 (0000) 
+# prediction[4] = 0.000 (0000) 
+# prediction[5] = 0.000 (0000) 
+# prediction[6] = 0.000 (0000) 
+# prediction[7] = 0.000 (0000) 
+# prediction[8] = 0.000 (0000) 
+# prediction[9] = 0.000 (0000) 
+# 
+# Predicted:    1 Image label:    1 -- Correct prediction 
+# 
+# Test complete: 1 misprediction  
+# Accuracy: 95.0000 percent 
+# Test passed! 
+# 
+# 
+# ** Note: $finish    : ../rtl/testbench.sv(174)
+#    Time: 12959482 ns  Iteration: 1  Instance: /testbench
+# End time: 10:38:48 on Dec 06,2024, Elapsed time: 0:00:11
+# Errors: 0, Warnings: 1
