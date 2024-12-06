@@ -1,12 +1,10 @@
-
-
 import mnist_pkg::feature_type;
 
 module max_pool #(
-    parameter int ROW_STRIDE    = 2,  // Stride for rows
+    parameter int ROW_STRIDE    = 2,  // Stride for rows (NxN pooling: N is ROW_STRIDE)
     parameter int COL_STRIDE    = 2,  // Stride for columns
-    parameter int IMAGE_HEIGHT  = 4,  // Input image height
-    parameter int IMAGE_WIDTH   = 4   // Input image width
+    parameter int IMAGE_HEIGHT  = 6,  // Input image height
+    parameter int IMAGE_WIDTH   = 6   // Input image width
 )(
     input  logic        clock,         // Clock signal
     input  logic        reset_n,       // Active-low reset
@@ -24,20 +22,19 @@ module max_pool #(
     logic [$clog2(IMAGE_HEIGHT):0] addr_row, addr_col;   // Address of the top-left corner of the pooling region
     logic send;                                          // Signal to start sending output
 
-    // Assignments for computing max values in a 2x2 pooling region
-    feature_type upper_row_max, lower_row_max, max_value;
+    // Max value computation for NxN pooling
+    feature_type max_value;
 
-    assign upper_row_max = (image[addr_row][addr_col] > image[addr_row][addr_col + 1])
-                           ? image[addr_row][addr_col]
-                           : image[addr_row][addr_col + 1];
-
-    assign lower_row_max = (image[addr_row + 1][addr_col] > image[addr_row + 1][addr_col + 1])
-                           ? image[addr_row + 1][addr_col]
-                           : image[addr_row + 1][addr_col + 1];
-
-    assign max_value = (upper_row_max > lower_row_max) 
-                       ? upper_row_max 
-                       : lower_row_max;
+    always_comb begin
+        max_value = image[addr_row][addr_col];  // Initialize max_value with the first element in the region
+        for (int i = 0; i < ROW_STRIDE; i++) begin
+            for (int j = 0; j < COL_STRIDE; j++) begin
+                if (image[addr_row + i][addr_col + j] > max_value) begin
+                    max_value = image[addr_row + i][addr_col + j];
+                end
+            end
+        end
+    end
 
     // -------------------------------------------------------------------------
     // Input State Machine: Load Input Image
@@ -48,7 +45,7 @@ module max_pool #(
             in_col <= 0;
         end else if (features_in.valid && features_in.ready) begin
             image[in_row][in_col] <= features_in.features[0];
-            $display("DUT: Loaded input image[%0d][%0d] = %0d", in_row, in_col, features_in.features[0]);
+            //$display("DUT: Loaded input image[%0d][%0d] = %0d", in_row, in_col, features_in.features[0]);
             if (in_col + 1 < IMAGE_WIDTH) begin
                 in_col <= in_col + 1;
             end else begin
@@ -82,8 +79,8 @@ module max_pool #(
             end
             // Store the computed max value in the output array
             image_out[addr_row / ROW_STRIDE][addr_col / COL_STRIDE] <= max_value;
-            $display("DUT: Computed max for region [%0d:%0d][%0d:%0d] = %0d",
-                     addr_row, addr_row + ROW_STRIDE - 1, addr_col, addr_col + COL_STRIDE - 1, max_value);
+            //$display("DUT: Computed max for region [%0d:%0d][%0d:%0d] = %0d",
+                     //addr_row, addr_row + ROW_STRIDE - 1, addr_col, addr_col + COL_STRIDE - 1, max_value);
         end
     end
 
@@ -104,11 +101,11 @@ module max_pool #(
                         out_row <= out_row + 1;  // Move to the next row
                     end else begin
                         out_row <= 0;  // Reset after transmitting all outputs
-                        $display("DUT: Finished sending all outputs");
+                        //$display("DUT: Finished sending all outputs");
                     end
                 end
-                $display("DUT: Sending output image_out = [%0d][%0d]",
-                         out_row, out_col, image_out[out_row][out_col]);
+                //$display("DUT: Sending output image_out[%0d][%0d] = %0d",
+                         //out_row, out_col, image_out[out_row][out_col]);
             end
         end
     end
@@ -116,51 +113,4 @@ module max_pool #(
     assign features_out.valid = (send && out_row < (IMAGE_HEIGHT / ROW_STRIDE));
     assign features_out.features[0] = image_out[out_row][out_col];
 
-<<<<<<< HEAD
-   // -------------------------------------------------------------------------
-   // behavioral algorithm for max pool -- todo: re-write as synthesizable hardware
-   // -------------------------------------------------------------------------
-
-   initial begin
-     send = 0;
-     receive = 0;
-     @(posedge reset_n);
-     @(posedge clock);
-
-     forever begin
-
-       // read in features
-       receive = 1;
-       @(posedge clock);
-       receive = 0;
-       while (rx_state != RX_DONE) @(posedge clock);
-       @(posedge clock);
-
-       // process max pool
-       for (int row=0; row<IMAGE_HEIGHT; row+=ROW_STRIDE) begin
-         for (int col=0; col<IMAGE_WIDTH; col+=COL_STRIDE) begin
-           max = image[row][col];
-           for (int r=0; r<ROW_STRIDE; r++) begin
-             for (int c=0; c<COL_STRIDE; c++) begin
-               if (max < image[row+r][col+c]) max = image[row+r][col+c];
-             end
-           end
-           image_out[row/ROW_STRIDE][col/COL_STRIDE] = max;
-         end
-       end
-
-       // write out results
-       send = 1;
-       @(posedge clock);
-       send = 0;
-       while (tx_state != TX_DONE) @(posedge clock);
-       @(posedge clock);
-     end   
-  end
-
-
-endmodule : max_pool
-=======
 endmodule
-
->>>>>>> 0ecb71034aa8bde77897bec57fb03a18d92f8ced
