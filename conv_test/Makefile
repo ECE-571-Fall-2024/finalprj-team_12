@@ -1,12 +1,15 @@
  
 QUESTA_HOME = /pkgs/mentor/questa/2024.2/questasim
 
+
+export MTI_VCO_MODE = 64
+
 HW   = ../rtl
 SW   = ../cpp
 
 VLIB = $(QUESTA_HOME)/bin/vlib
 VMAP = $(QUESTA_HOME)/bin/vmap
-VLOG = $(QUESTA_HOME)/bin/vlog +acc=all -work work
+VLOG = $(QUESTA_HOME)/bin/vlog +acc=all +cover -work work
 VSIM = $(QUESTA_HOME)/bin/vsim -voptargs=+acc -work work 
 
 .PHONY: all compile sim gui clean
@@ -19,6 +22,7 @@ all:
 	@echo "   - sim     = run simulation in Questa (command line) "
 	@echo "   - gui     = run simulation in Questa with GUI "
 	@echo "   - fail    = run with INDUCE_FAILURE set, to show tests are effective "
+	@echo "   - cover   = run with coverage, view coverage report "
 	@echo " "
 
 gui: compile
@@ -39,6 +43,9 @@ fail: compile
 
 gui_fail: compile
 	$(VSIM) testbench -do gui_run.do -g INDUCE_FAILURE=1
+
+cover: compile
+	$(VSIM) testbench -do cover_run.do -coverage -g INPUT_IMAGES=3 -g OUTPUT_IMAGES=5
 
 compile: clean 
 	rm -rf ./work

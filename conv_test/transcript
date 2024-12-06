@@ -1,0 +1,94 @@
+# vsim "+access" -work work -c testbench -do "sim_run.do" -gINPUT_IMAGES=10 -gOUTPUT_IMAGES=10 
+# Start time: 22:49:10 on Dec 05,2024
+# ** Note: (vsim-3812) Design is being optimized...
+# Support of the MGLS_LICENSE_FILE and LM_LICENSE_FILE licensing environment variables will be discontinued starting with the 2025.1 release. Please update to using the SALT_LICENSE_SERVER variable.
+# Please contact Siemens EDA Customer Support (https://support.sw.siemens.com/) for assistance.
+# ** Note: (vopt-143) Recognized 3 FSMs in module "convolution(fast)".
+# //  Questa Sim-64
+# //  Version 2024.2 linux_x86_64 May 20 2024
+# //
+# // Unpublished work. Copyright 2024 Siemens
+# //
+# // This material contains trade secrets or otherwise confidential information
+# // owned by Siemens Industry Software Inc. or its affiliates (collectively,
+# // "SISW"), or its licensors. Access to and use of this information is strictly
+# // limited as set forth in the Customer's applicable agreements with SISW.
+# //
+# // This material may not be copied, distributed, or otherwise disclosed outside
+# // of the Customer's facilities without the express written permission of SISW,
+# // and may not be used in any way not expressly authorized by SISW.
+# //
+# Loading sv_std.std
+# Loading work.mnist_pkg(fast)
+# Loading work.convolution_sv_unit(fast)
+# Loading work.interface_sv_unit(fast)
+# Loading work.testbench_sv_unit(fast)
+# Loading work.testbench(fast)
+# do sim_run.do
+# Running convolution test 
+# image_height: 10 
+# image_width: 10 
+# filter_height: 3 
+# filter_width: 3 
+# input_images: 10 
+# output_images: 10 
+# image height: 10 
+# image width:  10 
+# fimage width: 11 
+# image size:   100 
+# shift reg size: 25 
+# running test: incrementing_image with identity_filter 
+# running test: incrementing_image with random_filter 
+# running test: incrementing_image with zero_filter 
+# running test: incrementing_image with identity_filter 
+# running test: incrementing_image with negative_identity_filter 
+# running test: incrementing_image with constant_filter 
+# running test: incrementing_image with incrementing_filter 
+# running test: zero_image with identity_filter 
+# running test: zero_image with random_filter 
+# running test: zero_image with zero_filter 
+# running test: zero_image with identity_filter 
+# running test: zero_image with negative_identity_filter 
+# running test: zero_image with constant_filter 
+# running test: zero_image with incrementing_filter 
+# running test: ramdom_image with identity_filter 
+# running test: ramdom_image with random_filter 
+# running test: ramdom_image with zero_filter 
+# running test: ramdom_image with identity_filter 
+# running test: ramdom_image with negative_identity_filter 
+# running test: ramdom_image with constant_filter 
+# running test: ramdom_image with incrementing_filter 
+# running test: random_negative_image with identity_filter 
+# running test: random_negative_image with random_filter 
+# running test: random_negative_image with zero_filter 
+# running test: random_negative_image with identity_filter 
+# running test: random_negative_image with negative_identity_filter 
+# running test: random_negative_image with constant_filter 
+# running test: random_negative_image with incrementing_filter 
+# running test: random_positive_image with identity_filter 
+# running test: random_positive_image with random_filter 
+# running test: random_positive_image with zero_filter 
+# running test: random_positive_image with identity_filter 
+# running test: random_positive_image with negative_identity_filter 
+# running test: random_positive_image with constant_filter 
+# running test: random_positive_image with incrementing_filter 
+# running test: constant image with identity_filter 
+# running test: constant image with random_filter 
+# running test: constant image with zero_filter 
+# running test: constant image with identity_filter 
+# running test: constant image with negative_identity_filter 
+# running test: constant image with constant_filter 
+# running test: constant image with incrementing_filter 
+# running test: incrementing_image with identity_filter 
+# running test: incrementing_image with random_filter 
+# running test: incrementing_image with zero_filter 
+# running test: incrementing_image with identity_filter 
+# running test: incrementing_image with negative_identity_filter 
+# running test: incrementing_image with constant_filter 
+# running test: incrementing_image with incrementing_filter 
+# Running 100 random test iterations 
+# Convolution tests passed! 
+# ** Note: $finish    : ./testbench.sv(453)
+#    Time: 8723482 ns  Iteration: 1  Instance: /testbench
+# End time: 22:49:19 on Dec 05,2024, Elapsed time: 0:00:09
+# Errors: 0, Warnings: 0
