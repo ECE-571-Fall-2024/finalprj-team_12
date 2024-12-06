@@ -1,6 +1,8 @@
  
 QUESTA_HOME = /pkgs/mentor/questa/2024.2/questasim
 
+export MTI_VCO_MODE = 64
+
 HW   = ../rtl
 SW   = ../cpp
 

@@ -49,21 +49,33 @@ module testbench;
 
   // images
 
+  class random_positive_image_class;
+    rand image_array rand_img;
+    constraint positive_only { foreach (rand_img[r,c]) (rand_img[r][c] > 0); }
+  endclass
+
+  class random_negative_image_class;
+    rand image_array rand_img;
+    constraint negative_only { foreach (rand_img[r,c]) (rand_img[r][c] < 0); }
+  endclass
+
+  random_positive_image_class rpi = new();
+  random_negative_image_class rni = new();
+
   function automatic void random_image(ref image_array image);
-    feature_type rv;
-    foreach (image[r,c]) begin
-      rv = $urandom_range(0, 1<<(feature_frac_bits+2));
-      if ($urandom() & 1'b1) rv = -rv;
-      image[r][c] = rv;
-    end
+    bit ret = std::randomize(image);
   endfunction : random_image
 
   function automatic void random_positive_image(ref image_array image);
-    foreach (image[r,c]) image[r][c] = $urandom_range(0, 1<<(feature_frac_bits+2));
+    bit ret = rpi.randomize();
+    if (ret) image = rpi.rand_img;
+    else $display("randomize failed! ");
   endfunction
 
   function automatic void random_negative_image(ref image_array image);
-    foreach (image[r,c]) image[r][c] = -$urandom_range(0, 1<<(feature_frac_bits+2));
+    bit ret = rni.randomize();
+    if (ret) image = rni.rand_img;
+    else $display("randomize failed! ");
   endfunction
 
   function automatic void zero_image(ref image_array image);
@@ -81,12 +93,7 @@ module testbench;
   // filters
 
   function automatic void random_filter(ref filter_array filter);
-    weight_type rv;
-    foreach (filter[r,c]) begin
-      rv = $urandom_range(0, 1<<weight_frac_bits);
-      if ($urandom() & 1'b1) rv = -rv;
-      filter[r][c] = rv;
-    end
+    std::randomize(filter);
   endfunction : random_filter
 
   function automatic void zero_filter(ref filter_array filter);
@@ -409,7 +416,7 @@ module testbench;
           end
         end
 
-        foreach (biases[b]) biases[b] = 0; // $urandom_range(0,1023) - 512; 
+        foreach (biases[b]) biases[b] = $urandom_range(0,1023) - 512; 
 
         convolution(INPUT_IMAGES, OUTPUT_IMAGES, biases, input_image, filter, expected_output);
 
@@ -437,7 +444,6 @@ module testbench;
       convolution(INPUT_IMAGES, OUTPUT_IMAGES, biases, input_image, filter, expected_output);
 
       run_convolution(input_image, filter, biases, output_images);
-
 
       if (expected_output != output_images) print_failure(input_image, filter, output_images, expected_output);
     end
