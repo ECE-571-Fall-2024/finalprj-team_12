@@ -1,3 +1,5 @@
+
+
 import mnist_pkg::feature_type;
 
 module max_pool #(
@@ -147,34 +149,45 @@ module max_pool #(
    assign features_out.valid = tx_state == TX_SEND;
 
    // -------------------------------------------------------------------------
-   // max pool logic
+   // behavioral algorithm for max pool -- todo: re-write as synthesizable hardware
    // -------------------------------------------------------------------------
 
-  always_ff @(posedge clock or negedge reset_n) begin
-     if (!reset_n) begin
-    	send <= 0;
-    	receive <= 1;
-     end else if (rx_state == RX_DONE) begin
-    	receive <= 0;
-    
-	// Process max pooling after receiving data
-    for (int row = 0; row < IMAGE_HEIGHT; row += ROW_STRIDE) begin
-      for (int col = 0; col < IMAGE_WIDTH; col += COL_STRIDE) begin
-        max = image[row][col];  // Initialize max
-        for (int r = 0; r < ROW_STRIDE; r++) begin
-          for (int c = 0; c < COL_STRIDE; c++) begin
-            if (image[row + r][col + c] > max)
-              max = image[row + r][col + c];
-          end
-        end
-        image_out[row/ROW_STRIDE][col/COL_STRIDE] <= max; // Store the max value
-      end
-    end
-      send <= 1;  // Trigger sending the result
-      end else if (tx_state == TX_DONE) begin
-      send <= 0;
-      receive <= 1;  // Prepare to receive the next image
+   initial begin
+     send = 0;
+     receive = 0;
+     @(posedge reset_n);
+     @(posedge clock);
+
+     forever begin
+
+       // read in features
+       receive = 1;
+       @(posedge clock);
+       receive = 0;
+       while (rx_state != RX_DONE) @(posedge clock);
+       @(posedge clock);
+
+       // process max pool
+       for (int row=0; row<IMAGE_HEIGHT; row+=ROW_STRIDE) begin
+         for (int col=0; col<IMAGE_WIDTH; col+=COL_STRIDE) begin
+           max = image[row][col];
+           for (int r=0; r<ROW_STRIDE; r++) begin
+             for (int c=0; c<COL_STRIDE; c++) begin
+               if (max < image[row+r][col+c]) max = image[row+r][col+c];
+             end
+           end
+           image_out[row/ROW_STRIDE][col/COL_STRIDE] = max;
+         end
+       end
+
+       // write out results
+       send = 1;
+       @(posedge clock);
+       send = 0;
+       while (tx_state != TX_DONE) @(posedge clock);
+       @(posedge clock);
+     end   
   end
-end
-   
+
+
 endmodule : max_pool

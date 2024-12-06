@@ -1,0 +1,161 @@
+# //  Questa Sim-64
+# //  Version 2024.2 linux_x86_64 May 20 2024
+# //
+# // Unpublished work. Copyright 2024 Siemens
+# //
+# // This material contains trade secrets or otherwise confidential information
+# // owned by Siemens Industry Software Inc. or its affiliates (collectively,
+# // "SISW"), or its licensors. Access to and use of this information is strictly
+# // limited as set forth in the Customer's applicable agreements with SISW.
+# //
+# // This material may not be copied, distributed, or otherwise disclosed outside
+# // of the Customer's facilities without the express written permission of SISW,
+# // and may not be used in any way not expressly authorized by SISW.
+# //
+# vsim -voptargs="+acc" -work work -sv_lib softmax testbench -do "gui_run.do" 
+# Start time: 02:12:18 on Dec 06,2024
+# ** Note: (vsim-3812) Design is being optimized...
+# ** Warning: (vopt-10587) Some optimizations are turned off because the +acc switch is in effect. This will cause your simulation to run slowly. Please use -access/-debug to maintain needed visibility. The +acc switch would be deprecated in a future release.
+# Support of the MGLS_LICENSE_FILE and LM_LICENSE_FILE licensing environment variables will be discontinued starting with the 2025.1 release. Please update to using the SALT_LICENSE_SERVER variable.
+# Please contact Siemens EDA Customer Support (https://support.sw.siemens.com/) for assistance.
+# ** Note: (vopt-143) Recognized 3 FSMs in module "convolution(fast)".
+# ** Note: (vopt-143) Recognized 3 FSMs in module "convolution(fast__1)".
+# ** Note: (vopt-143) Recognized 2 FSMs in module "max_pool(fast)".
+# ** Note: (vopt-143) Recognized 2 FSMs in module "max_pool(fast__1)".
+# ** Note: (vopt-143) Recognized 2 FSMs in module "dense(fast)".
+# ** Note: (vopt-143) Recognized 2 FSMs in module "dense(fast__1)".
+# ** Note: (vopt-143) Recognized 2 FSMs in module "softmax(fast)".
+# ** Note: (vsim-12126) Error and warning message counts have been restored: Errors=0, Warnings=1.
+# Loading sv_std.std
+# Loading work.mnist_pkg(fast)
+# Loading work.testbench_sv_unit(fast)
+# Loading work.testbench(fast)
+# Loading work.mnist_sv_unit(fast)
+# Loading work.mnist(fast)
+# Loading work.interface_sv_unit(fast)
+# Loading work.feature_if(fast__1)
+# Loading work.feature_if(fast__2)
+# Loading work.feature_if(fast__3)
+# Loading work.convolution_sv_unit(fast)
+# Loading work.convolution(fast)
+# Loading work.max_pool_sv_unit(fast)
+# Loading work.max_pool(fast)
+# Loading work.convolution(fast__1)
+# Loading work.max_pool(fast__1)
+# Loading work.dense_sv_unit(fast)
+# Loading work.dense(fast)
+# Loading work.dense(fast__1)
+# Loading work.softmax_sv_unit(fast)
+# Loading work.softmax(fast)
+# Loading ./softmax.so
+# do gui_run.do
+# ** UI-Msg (Warning): (vish-4014) No objects found matching '/testbench/dut/u_convolution_1/sum'.
+# Executing ONERROR command at macro ./wave.do line 9
+# ** UI-Msg (Warning): (vish-4014) No objects found matching '/testbench/dut/u_convolution_1/r'.
+# Executing ONERROR command at macro ./wave.do line 10
+# ** UI-Msg (Warning): (vish-4014) No objects found matching '/testbench/dut/u_convolution_1/c'.
+# Executing ONERROR command at macro ./wave.do line 11
+# ** UI-Msg (Warning): (vish-4014) No objects found matching '/testbench/dut/u_convolution_2/sum'.
+# Executing ONERROR command at macro ./wave.do line 31
+# ** UI-Msg (Warning): (vish-4014) No objects found matching '/testbench/dut/u_convolution_2/r'.
+# Executing ONERROR command at macro ./wave.do line 32
+# ** UI-Msg (Warning): (vish-4014) No objects found matching '/testbench/dut/u_convolution_2/c'.
+# Executing ONERROR command at macro ./wave.do line 33
+# ** UI-Msg (Warning): (vish-4014) No objects found matching '/testbench/dut/u_dense_1/feature_in_count'.
+# Executing ONERROR command at macro ./wave.do line 53
+# ** UI-Msg (Warning): (vish-4014) No objects found matching '/testbench/dut/u_dense_1/feature_out_count'.
+# Executing ONERROR command at macro ./wave.do line 54
+# ** UI-Msg (Warning): (vish-4014) No objects found matching '/testbench/dut/u_dense_1/feature'.
+# Executing ONERROR command at macro ./wave.do line 55
+# ** UI-Msg (Warning): (vish-4014) No objects found matching '/testbench/dut/u_dense_1/sum'.
+# Executing ONERROR command at macro ./wave.do line 56
+# ** UI-Msg (Warning): (vish-4014) No objects found matching '/testbench/dut/u_dense_2/feature_in_count'.
+# Executing ONERROR command at macro ./wave.do line 66
+# ** UI-Msg (Warning): (vish-4014) No objects found matching '/testbench/dut/u_dense_2/feature_out_count'.
+# Executing ONERROR command at macro ./wave.do line 67
+# ** UI-Msg (Warning): (vish-4014) No objects found matching '/testbench/dut/u_dense_2/feature'.
+# Executing ONERROR command at macro ./wave.do line 68
+# ** UI-Msg (Warning): (vish-4014) No objects found matching '/testbench/dut/u_dense_2/sum'.
+# Executing ONERROR command at macro ./wave.do line 69
+# image height: 28 
+# image width:  28 
+# fimage width: 30 
+# image size:   784 
+# shift reg size: 125 
+# image height: 14 
+# image width:  14 
+# fimage width: 15 
+# image size:   196 
+# shift reg size: 34 
+#                                                         
+#                                                         
+#                                                         
+#                                         7bcc09          
+#                                       50fd59            
+#                                     06a2df20            
+#                                     40fc50              
+#                                     98d0                
+#                     081d          54fd56                
+#                     9da8          a2cd0b                
+#                     fd74        57f981                  
+#                   1bfd3f      0bcecd                    
+#                 1bd3ec25      57fc7e                    
+#                 52fd84        ffef11                    
+#               34e8fc        24fd59                      
+#               87fc7916161616a2fd3f          1407        
+#             16edfcfcfdfcfcfcfcfdbda0404052a9d63f        
+#             32f4b693689367adfcbfb6fcfcfcec931d          
+#                           7efd                          
+#                         10e8d9                          
+#                         77fc8a                          
+#                         7ffc44                          
+#                         1ead67                          
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+# prediction[0] = 0.098 (0019) 
+# prediction[1] = 0.098 (0019) 
+# prediction[2] = 0.098 (0019) 
+# prediction[3] = 0.098 (0019) 
+# prediction[4] = 0.098 (0019) 
+# prediction[5] = 0.098 (0019) 
+# prediction[6] = 0.098 (0019) 
+# prediction[7] = 0.098 (0019) 
+# prediction[8] = 0.098 (0019) 
+# prediction[9] = 0.098 (0019) 
+# 
+# Predicted:    0 Image label:    4 -- Missed prediction 
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                                                         
+#                           74feba06                      
+#                         44f3fda62f                      
+#                       80f0fda0                          
+#                       cefde809                          
+#                     35f0fd74                            
+#                     49fdb306  89b61c                    
+#                     abfd9c  29fefdc2                    
+#                     c2fd9c2ae6fefdd9                    
+#                     c2fdc6abfdfefdd9                    
+#                     c2fdfdfdfdfefdd9                    
+#                     80fcfefef3c0ffda                    
+#                       58d4b10585fdd9                    
+#                               85fdd9                    
+#                               85fdea29                  
+#                               2ffdf33d                  
+#                               09defd54                  
+#                                 6afd54                  
+#                                 19fdbc                  
+#                                 0ed4f976                
+#                                   19be65                
+#                                                         
+#                                                         
+#                                                         
+# Break key hit
+# Break in Module testbench at ../rtl/testbench.sv line 16
+# End time: 02:12:43 on Dec 06,2024, Elapsed time: 0:00:25
+# Errors: 0, Warnings: 1
