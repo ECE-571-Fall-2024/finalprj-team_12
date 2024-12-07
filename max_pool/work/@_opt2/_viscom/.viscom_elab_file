@@ -1,0 +1,1 @@
+/pkgs/mentor/questa/2024.2/questasim/linux_x86_64/VisualizerRls/bin/viscom -nolock -quiet -jmem_size 1130784 work.max_pool_tb -quiet -auto_acc_if_foreign -work work +acc -allow_unnamed -o _opt2 -id 1-5254006cf05e-6753f32b-39475-2fcf +__design_bin_path+/home/saianuk/common/Desktop/ECE571-F24/finalprj-team_12/max_pool +__betafsm
