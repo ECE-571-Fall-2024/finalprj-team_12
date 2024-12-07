@@ -1,0 +1,218 @@
+m255
+K4
+z2
+!s12c _opt2
+Z0 !s99 nomlopt
+!s11f vlog 2024.2 2024.05, May 20 2024
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z1 d/home/saianuk/common/Desktop/ECE571-F24/finalprj-team_12/max_pool
+T_opt2
+!s110 1733554987
+VB[H5RYKa3[4dLV<?Iaee33
+04 11 4 work max_pool_tb fast 0
+=1-5254006cf05e-6753f32b-39475-2fcf
+R0
+!s12f OEM100
+!s12b OEM100
+!s124 OEM100
+!s135 nogc
+o-quiet -auto_acc_if_foreign -work work +acc
+Z2 tCvgOpt 0
+n@_opt2
+OL;O;2024.2;79
+R1
+Yfeature_if
+Z3 2../rtl/interface.sv
+Z4 DXx6 sv_std 3 std 0 22 9oUSJO;AeEaW`l:M@^WG92
+Z5 DXx4 work 9 mnist_pkg 0 22 ilbjm?I=:;FzOIUOgQ@Df2
+DXx4 work 17 interface_sv_unit 0 22 mc`l@Qd5BHQ:8X_]cJdd]0
+Z6 !s110 1733555011
+Z7 VDg1SIo80bB@j0V0VzS_@n1
+r1
+!s85 0
+!i10b 1
+!s100 <9O1<RWzHb>]9;=OEgj?Q2
+IYcZi]TD^9_>VOJL5AB24z1
+!s105 interface_sv_unit
+S1
+R1
+Z8 w1733524103
+Z9 8../rtl/interface.sv
+Z10 F../rtl/interface.sv
+!i122 12
+L0 3 0
+Z11 OL;L;2024.2;79
+31
+Z12 !s108 1733555011.000000
+Z13 !s107 ../rtl/interface.sv|
+Z14 !s90 +acc|-sv|../rtl/interface.sv|
+!i113 0
+Z15 o+acc -sv -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+R2
+Xinterface_sv_unit
+R3
+R4
+R5
+R6
+Vmc`l@Qd5BHQ:8X_]cJdd]0
+r1
+!s85 0
+!i10b 1
+!s100 KAc`cGXUXeMad`FHEf0oK0
+Imc`l@Qd5BHQ:8X_]cJdd]0
+!i103 1
+S1
+R1
+R8
+R9
+R10
+!i122 12
+Z16 L0 1 0
+R11
+31
+R12
+R13
+R14
+!i113 0
+R15
+R2
+vmax_pool
+Z17 2max_pool.sv
+R4
+R5
+DXx4 work 16 max_pool_sv_unit 0 22 45GA`=JhO>ZGP0M7KQAnE2
+Z18 !s110 1733555012
+R7
+r1
+!s85 0
+!i10b 1
+!s100 =G4=^5a9gGN2[VVF6IieA3
+I0=1>DH700`DmScY@DQZ7]1
+!s105 max_pool_sv_unit
+S1
+R1
+Z19 w1733524185
+Z20 8max_pool.sv
+Z21 Fmax_pool.sv
+!i122 13
+L0 3 114
+R11
+31
+R12
+Z22 !s107 max_pool.sv|
+Z23 !s90 +acc|-sv|max_pool.sv|
+!i113 0
+R15
+R2
+Xmax_pool_sv_unit
+R17
+R4
+R5
+R18
+V45GA`=JhO>ZGP0M7KQAnE2
+r1
+!s85 0
+!i10b 1
+!s100 :?lSZXJXKmA]iFICjfd4K0
+I45GA`=JhO>ZGP0M7KQAnE2
+!i103 1
+S1
+R1
+R19
+R20
+R21
+!i122 13
+R16
+R11
+31
+R12
+R22
+R23
+!i113 0
+R15
+R2
+vmax_pool_tb
+Z24 2max_pool_tb.sv
+R4
+R5
+DXx4 work 19 max_pool_tb_sv_unit 0 22 i:SJ[k6lZF^h@J]9PHKYA1
+R18
+R7
+r1
+!s85 0
+!i10b 1
+!s100 L?MWf0XK^iR^iOcg3Ra721
+IQo;zQ_?;kCIia<dcU=aRZ2
+!s105 max_pool_tb_sv_unit
+S1
+R1
+Z25 w1733524208
+Z26 8max_pool_tb.sv
+Z27 Fmax_pool_tb.sv
+!i122 14
+L0 3 147
+R11
+31
+Z28 !s108 1733555012.000000
+!s107 max_pool_tb.sv|
+Z29 !s90 +acc|-sv|max_pool_tb.sv|
+!i113 0
+R15
+R2
+Xmax_pool_tb_sv_unit
+R24
+R4
+R5
+R18
+Vi:SJ[k6lZF^h@J]9PHKYA1
+r1
+!s85 0
+!i10b 1
+!s100 B^<l=9AciGlH0>]z6Qnz]2
+Ii:SJ[k6lZF^h@J]9PHKYA1
+!i103 1
+S1
+R1
+R25
+R26
+R27
+!i122 14
+R16
+R11
+31
+R28
+Z30 !s107 max_pool_tb.sv|
+R29
+!i113 0
+R15
+R2
+Xmnist_pkg
+2../rtl/mnist_pkg.sv
+R4
+R6
+!i10b 1
+!s100 :]^k7:oegL417beRPYF2I1
+Iilbjm?I=:;FzOIUOgQ@Df2
+S1
+R1
+R8
+8../rtl/mnist_pkg.sv
+F../rtl/mnist_pkg.sv
+!i122 11
+R16
+Vilbjm?I=:;FzOIUOgQ@Df2
+R11
+r1
+!s85 0
+31
+R12
+!s107 ../rtl/mnist_pkg.sv|
+!s90 +acc|-sv|../rtl/mnist_pkg.sv|
+!i113 0
+R15
+R2

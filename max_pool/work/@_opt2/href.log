@@ -1,0 +1,10 @@
+BEGIN 3:feature_if:fast__2:work
+    ready :  1:max_pool_tb:fast:work 1:max_pool:fast:work
+    features :  1:max_pool_tb:fast:work 1:max_pool:fast:work
+    valid :  1:max_pool_tb:fast:work 1:max_pool:fast:work
+END 
+BEGIN 3:feature_if:fast__1:work
+    valid :  1:max_pool_tb:fast:work 1:max_pool:fast:work
+    ready :  1:max_pool_tb:fast:work 1:max_pool:fast:work
+    features :  1:max_pool_tb:fast:work 1:max_pool:fast:work
+END 
