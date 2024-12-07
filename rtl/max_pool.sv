@@ -172,9 +172,8 @@ module max_pool #(
    assign send    = st_state == ST_SEND;
 
    // -------------------------------------------------------------------------
-   // behavioral algorithm for max pool -- todo: re-write as synthesizable hardware
+   // main processing for max_pool
    // -------------------------------------------------------------------------
-
 
    always_ff @(posedge clock, negedge reset_n) begin
      if (reset_n == 0) begin
