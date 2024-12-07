@@ -1,6 +1,7 @@
+
 import mnist_pkg::*;
 
-module testbench;
+module dense_testbench;
 
   parameter INPUT_VECTOR_LENGTH  = 10;
   parameter OUTPUT_VECTOR_LENGTH = 10;
@@ -35,11 +36,6 @@ module testbench;
     foreach (vector[i]) begin
       vector[i] = $urandom_range(-256, 255);
     end
-  endfunction
-
-  // Function to generate a zero vector (static array version)
-  function automatic void generate_zero_vector(output feature_type vector[INPUT_VECTOR_LENGTH]);
-    foreach (vector[i]) vector[i] = 0;
   endfunction
 
   // Compute dense layer output (expected, static array version)
@@ -145,4 +141,3 @@ module testbench;
   );
 
 endmodule
-
