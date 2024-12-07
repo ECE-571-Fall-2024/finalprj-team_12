@@ -1,58 +1,37 @@
- 
+
+# Set the path to QuestaSim installation
 QUESTA_HOME = /pkgs/mentor/questa/2024.2/questasim
 
-
-export MTI_VCO_MODE = 64
-
-HW   = ../rtl
-SW   = ../cpp
-
+# QuestaSim commands
 VLIB = $(QUESTA_HOME)/bin/vlib
 VMAP = $(QUESTA_HOME)/bin/vmap
-VLOG = $(QUESTA_HOME)/bin/vlog +acc=all +cover -work work
-VSIM = $(QUESTA_HOME)/bin/vsim -voptargs=+acc -work work 
+VLOG = $(QUESTA_HOME)/bin/vlog +acc
+VSIM = $(QUESTA_HOME)/bin/vsim -voptargs=+acc
 
+# Targets
 .PHONY: all compile sim gui clean
 
-all:
-	@echo " "
-	@echo " make targets are: "
-	@echo "   - clean   = remove created files and cruft "
-	@echo "   - compile = analyze all input hdl files "
-	@echo "   - sim     = run simulation in Questa (command line) "
-	@echo "   - gui     = run simulation in Questa with GUI "
-	@echo "   - fail    = run with INDUCE_FAILURE set, to show tests are effective "
-	@echo "   - cover   = run with coverage, view coverage report "
-	@echo " "
+# Default target
+all: sim
 
-gui: compile
-	$(VSIM) testbench -do gui_run.do
-
-sim: compile
-	$(VSIM) -c testbench -do sim_run.do
-	@echo "All tests passed successfully!"
-
-fail: compile
-	$(VSIM) -c testbench -do sim_run.do -g INDUCE_FAILURE=1
-
-gui_fail: compile
-	$(VSIM) testbench -do gui_run.do -g INDUCE_FAILURE=1
-
-compile: clean 
-	rm -rf ./work
-
+# Compilation step
+compile:
 	$(VLIB) ./work
 	$(VMAP) work ./work
+	$(VLOG) -sv ../rtl/mnist_pkg.sv
+	$(VLOG) -sv ../rtl/interface.sv
+	$(VLOG) -sv dense.sv
+	$(VLOG) -sv testbench.sv
 
-	$(VLOG) $(HW)/mnist_pkg.sv
-	$(VLOG) $(HW)/interface.sv
-	$(VLOG) $(HW)/dense.sv
-	$(VLOG) ./testbench.sv
+# Simulation step
+sim: compile
+	$(VSIM) -c dense_tb -do "run -all; quit;" -l transcript
 
-CRUFT  = transcript
-CRUFT += *.wlf
-CRUFT += work
-CRUFT += modelsim.ini
+# GUI simulation step
+gui: compile
+	$(VSIM) dense_tb -do "run -all"
 
+# Clean step
 clean:
-	rm -rf $(CRUFT)
+	rm -rf work transcript *.wlf transcript
+

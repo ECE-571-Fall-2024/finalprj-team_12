@@ -1,0 +1,146 @@
+# //  Questa Sim-64
+# //  Version 2024.2 linux_x86_64 May 20 2024
+# //
+# // Unpublished work. Copyright 2024 Siemens
+# //
+# // This material contains trade secrets or otherwise confidential information
+# // owned by Siemens Industry Software Inc. or its affiliates (collectively,
+# // "SISW"), or its licensors. Access to and use of this information is strictly
+# // limited as set forth in the Customer's applicable agreements with SISW.
+# //
+# // This material may not be copied, distributed, or otherwise disclosed outside
+# // of the Customer's facilities without the express written permission of SISW,
+# // and may not be used in any way not expressly authorized by SISW.
+# //
+# vsim -voptargs="+acc" dense_tb -do "run -all" 
+# Start time: 00:09:01 on Dec 07,2024
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# ** Warning: (vopt-10587) Some optimizations are turned off because the +acc switch is in effect. This will cause your simulation to run slowly. Please use -access/-debug to maintain needed visibility. The +acc switch would be deprecated in a future release.
+# Support of the MGLS_LICENSE_FILE and LM_LICENSE_FILE licensing environment variables will be discontinued starting with the 2025.1 release. Please update to using the SALT_LICENSE_SERVER variable.
+# Please contact Siemens EDA Customer Support (https://support.sw.siemens.com/) for assistance.
+# ** Note: (vsim-12126) Error and warning message counts have been restored: Errors=0, Warnings=1.
+# Loading sv_std.std
+# Loading work.mnist_pkg(fast)
+# Loading work.testbench_sv_unit(fast)
+# Loading work.dense_tb(fast)
+# Loading work.interface_sv_unit(fast)
+# Loading work.feature_if(fast__1)
+# Loading work.feature_if(fast__2)
+# Loading work.dense_sv_unit(fast)
+# Loading work.dense(fast)
+# run -all
+# === Starting Dense Module Test ===
+# Reset deasserted at time 20
+# Initializing weights and biases...
+# Initializing input vector...
+# Computing expected output...
+# Driving inputs to the DUT...
+# Capturing outputs from the DUT...
+# Validating outputs...
+# [ERROR] Output mismatch at index 0: Expected = 1240, Received = 1202
+# [ERROR] Output mismatch at index 1: Expected = 1254, Received = 1216
+# [ERROR] Output mismatch at index 2: Expected = 1275, Received = 1236
+# [ERROR] Output mismatch at index 3: Expected = 1295, Received = 1256
+# [ERROR] Output mismatch at index 4: Expected = 1316, Received = 1277
+# [ERROR] Output mismatch at index 5: Expected = 1337, Received = 1297
+# [ERROR] Output mismatch at index 6: Expected = 1356, Received = 1316
+# [ERROR] Output mismatch at index 7: Expected = 1378, Received = 1338
+# [ERROR] Output mismatch at index 8: Expected = 1399, Received = 1358
+# [ERROR] Output mismatch at index 9: Expected = 1418, Received = 1377
+# [ERROR] Output mismatch at index 10: Expected = 1436, Received = 1394
+# [ERROR] Output mismatch at index 11: Expected = 1459, Received = 1417
+# [ERROR] Output mismatch at index 12: Expected = 1479, Received = 1437
+# [ERROR] Output mismatch at index 13: Expected = 1500, Received = 1457
+# [ERROR] Output mismatch at index 14: Expected = 1520, Received = 1477
+# [ERROR] Output mismatch at index 15: Expected = 1541, Received = 1497
+# [ERROR] Output mismatch at index 16: Expected = 1564, Received = 1520
+# [ERROR] Output mismatch at index 17: Expected = 1580, Received = 1536
+# [ERROR] Output mismatch at index 18: Expected = 1598, Received = 1553
+# [ERROR] Output mismatch at index 19: Expected = 1620, Received = 1575
+# [ERROR] Output mismatch at index 20: Expected = 1642, Received = 1596
+# [ERROR] Output mismatch at index 21: Expected = 1659, Received = 1613
+# [ERROR] Output mismatch at index 22: Expected = 1684, Received = 1638
+# [ERROR] Output mismatch at index 23: Expected = 1701, Received = 1654
+# [ERROR] Output mismatch at index 24: Expected = 1725, Received = 1678
+# [ERROR] Output mismatch at index 25: Expected = 1743, Received = 1696
+# [ERROR] Output mismatch at index 26: Expected = 1759, Received = 1711
+# [ERROR] Output mismatch at index 27: Expected = 1783, Received = 1735
+# [ERROR] Output mismatch at index 28: Expected = 1804, Received = 1755
+# [ERROR] Output mismatch at index 29: Expected = 1823, Received = 1774
+# [ERROR] Output mismatch at index 30: Expected = 1847, Received = 1798
+# [ERROR] Output mismatch at index 31: Expected = 1863, Received = 1813
+# [ERROR] Output mismatch at index 32: Expected = 1888, Received = 1838
+# [ERROR] Output mismatch at index 33: Expected = 1906, Received = 1855
+# [ERROR] Output mismatch at index 34: Expected = 1925, Received = 1874
+# [ERROR] Output mismatch at index 35: Expected = 1946, Received = 1895
+# [ERROR] Output mismatch at index 36: Expected = 1964, Received = 1912
+# [ERROR] Output mismatch at index 37: Expected = 1985, Received = 1933
+# [ERROR] Output mismatch at index 38: Expected = 2007, Received = 1955
+# [ERROR] Output mismatch at index 39: Expected = 2024, Received = 1971
+# [ERROR] Output mismatch at index 40: Expected = 2050, Received = 1997
+# [ERROR] Output mismatch at index 41: Expected = 2069, Received = 2015
+# [ERROR] Output mismatch at index 42: Expected = 2087, Received = 2033
+# [ERROR] Output mismatch at index 43: Expected = 2108, Received = 2054
+# [ERROR] Output mismatch at index 44: Expected = 2131, Received = 2076
+# [ERROR] Output mismatch at index 45: Expected = 2146, Received = 2091
+# [ERROR] Output mismatch at index 46: Expected = 2166, Received = 2110
+# [ERROR] Output mismatch at index 47: Expected = 2189, Received = 2133
+# [ERROR] Output mismatch at index 48: Expected = 2214, Received = 2158
+# [ERROR] Output mismatch at index 49: Expected = 2230, Received = 2173
+# [ERROR] Output mismatch at index 50: Expected = 2251, Received = 2194
+# [ERROR] Output mismatch at index 51: Expected = 2273, Received = 2215
+# [ERROR] Output mismatch at index 52: Expected = 2289, Received = 2231
+# [ERROR] Output mismatch at index 53: Expected = 2311, Received = 2253
+# [ERROR] Output mismatch at index 54: Expected = 2334, Received = 2275
+# [ERROR] Output mismatch at index 55: Expected = 2349, Received = 2290
+# [ERROR] Output mismatch at index 56: Expected = 2374, Received = 2315
+# [ERROR] Output mismatch at index 57: Expected = 2394, Received = 2334
+# [ERROR] Output mismatch at index 58: Expected = 2408, Received = 2348
+# [ERROR] Output mismatch at index 59: Expected = 2435, Received = 2374
+# [ERROR] Output mismatch at index 60: Expected = 2457, Received = 2396
+# [ERROR] Output mismatch at index 61: Expected = 2473, Received = 2412
+# [ERROR] Output mismatch at index 62: Expected = 2497, Received = 2435
+# [ERROR] Output mismatch at index 63: Expected = 2512, Received = 2450
+# [ERROR] Output mismatch at index 64: Expected = 2543, Received = 2480
+# [ERROR] Output mismatch at index 65: Expected = 2556, Received = 2493
+# [ERROR] Output mismatch at index 66: Expected = 2571, Received = 2508
+# [ERROR] Output mismatch at index 67: Expected = 2599, Received = 2535
+# [ERROR] Output mismatch at index 68: Expected = 2619, Received = 2555
+# [ERROR] Output mismatch at index 69: Expected = 2635, Received = 2571
+# [ERROR] Output mismatch at index 70: Expected = 2659, Received = 2594
+# [ERROR] Output mismatch at index 71: Expected = 2673, Received = 2608
+# [ERROR] Output mismatch at index 72: Expected = 2699, Received = 2633
+# [ERROR] Output mismatch at index 73: Expected = 2721, Received = 2655
+# [ERROR] Output mismatch at index 74: Expected = 2735, Received = 2669
+# [ERROR] Output mismatch at index 75: Expected = 2763, Received = 2696
+# [ERROR] Output mismatch at index 76: Expected = 2777, Received = 2710
+# [ERROR] Output mismatch at index 77: Expected = 2795, Received = 2727
+# [ERROR] Output mismatch at index 78: Expected = 2827, Received = 2759
+# [ERROR] Output mismatch at index 79: Expected = 2839, Received = 2771
+# [ERROR] Output mismatch at index 80: Expected = 2861, Received = 2792
+# [ERROR] Output mismatch at index 81: Expected = 2885, Received = 2816
+# [ERROR] Output mismatch at index 82: Expected = 2896, Received = 2827
+# [ERROR] Output mismatch at index 83: Expected = 2919, Received = 2849
+# [ERROR] Output mismatch at index 84: Expected = 2948, Received = 2878
+# [ERROR] Output mismatch at index 85: Expected = 2960, Received = 2889
+# [ERROR] Output mismatch at index 86: Expected = 2982, Received = 2911
+# [ERROR] Output mismatch at index 87: Expected = 3005, Received = 2934
+# [ERROR] Output mismatch at index 88: Expected = 3025, Received = 2953
+# [ERROR] Output mismatch at index 89: Expected = 3041, Received = 2969
+# [ERROR] Output mismatch at index 90: Expected = 3069, Received = 2996
+# [ERROR] Output mismatch at index 91: Expected = 3084, Received = 3011
+# [ERROR] Output mismatch at index 92: Expected = 3099, Received = 3026
+# [ERROR] Output mismatch at index 93: Expected = 3129, Received = 3055
+# [ERROR] Output mismatch at index 94: Expected = 3144, Received = 3070
+# [ERROR] Output mismatch at index 95: Expected = 3163, Received = 3088
+# [ERROR] Output mismatch at index 96: Expected = 3196, Received = 3121
+# [ERROR] Output mismatch at index 97: Expected = 3208, Received = 3133
+# [ERROR] Output mismatch at index 98: Expected = 3226, Received = 3150
+# [ERROR] Output mismatch at index 99: Expected = 3247, Received = 3171
+# === Test Completed ===
+# ** Note: $finish    : testbench.sv(149)
+#    Time: 20429 ns  Iteration: 1  Instance: /dense_tb
+# 1
+# Break in Module dense_tb at testbench.sv line 149
+# End time: 00:09:50 on Dec 07,2024, Elapsed time: 0:00:49
+# Errors: 0, Warnings: 1
